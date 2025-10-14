@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('testea el titulo del menú, como las colecciones de las demás pestañas', async ({ page }) => {
-  await page.goto('http://localhost:5173/');
+  await page.goto('http://localhost:3000/inicio');
   await page.getByRole('banner').getByRole('img').click();
   await expect(page.locator('h2')).toContainText('Menú');
   await expect(page.getByRole('list')).toContainText('Inicio');

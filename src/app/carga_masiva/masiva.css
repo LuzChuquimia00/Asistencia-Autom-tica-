@@ -1,0 +1,19 @@
+
+/* 1. Definición de la fuente global (importada en el HTML principal) */
+body {
+font-family: 'Inter', sans-serif;
+background-color: #f7f9fc;
+}
+
+/* 2. Personalización del scrollbar para el contenedor de la tabla (requiere CSS puro) */
+.scroll-container::-webkit-scrollbar {
+height: 8px;
+}
+.scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.scroll-container {
+overflow-x: auto;
+}

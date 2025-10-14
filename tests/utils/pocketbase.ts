@@ -107,11 +107,12 @@ export async function createStudents(count: number): Promise<Student[]> {
  * @param state El estado de asistencia ('present' o 'absent').
  * @returns Una promesa que se resuelve con el registro de asistencia creado.
  */
-export async function createAttendance(studentId: string, course: string, state: string): Promise<Attendance> {
+export async function createAttendance(studentId: string, course: string, state: string, todayDate: string): Promise<Attendance> {
     const response = await consultas.post('/api/collections/attendance_management/records', {
         student: studentId,
         course: [course],
-        state: state
+        state: state,
+        date: todayDate,
     });
     return response.data;
 }
