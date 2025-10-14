@@ -9,7 +9,6 @@ const Inicio = ({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boolean, togg
   const [ausentes, setAusentes] = useState(0);
   const [justificaciones, setJustificaciones] = useState(0);
   const [sinJustificaciones, setSinJustificaciones] = useState(0);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
