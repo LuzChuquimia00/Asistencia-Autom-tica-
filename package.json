@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "npx playwright test",
     "test:web": "npx playwright test --config=playwright.config.ts --project=web",
-    "test:web-csv": "npx playwright test --config=playwright.config.ts --project=web-csv",
+    "test:web-csv": "npx playwright test ./tests/web-csv/",
     "test:api": "npx playwright test --config=playwright.config.ts --project=api",
     "pb:test": "pocketbase serve --dir=\"./pb_data_test\"",
     "codegen": "npx playwright codegen"
