@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useMemo, useCallback } from 'react';
 import './masiva.css'; // Estilos específicos para la tabla y scroll
+import { authenticateAsAdmin, createPreceptor } from '../../server/pocketbase';
 // Tipado para un registro de preceptor procesado
 interface PreceptorRecord {
     nombre: string;
@@ -8,7 +9,7 @@ interface PreceptorRecord {
     grado: string;
     username: string;
     password: string;
-    status: 'VÁLIDO' | 'ERROR' | 'PENDIENTE';
+    status: 'VÁLIDO' | 'ERROR' | 'PENDIENTE'|'REGISTRADO';
     message: string;
 }
 
@@ -28,7 +29,7 @@ const App: React.FC = () => {
     const [processedData, setProcessedData] = useState<PreceptorRecord[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [modal, setModal] = useState<ModalState>({ isOpen: false, title: '', message: '', type: 'info' });
-
+    const [registrationCount, setRegistrationCount] = useState<number>(0); //Contador de registros exitosos
     const REQUIRED_FIELDS = 3;
 
     // Funciones para manejar el Modal (reemplazo de alert())
@@ -139,37 +140,74 @@ const App: React.FC = () => {
         reader.readAsText(file);
     };
 
-    // 4. Lógica de Confirmación y PocketBase
-    const simulatePocketBaseSubmission = (dataToSend: PreceptorRecord[]) => {
-        // Criterio de Aceptación: Tras aceptar los datos registrados, estos se deben enviar a pocketbase.
-        console.log("--- SIMULACIÓN DE ENVÍO A POCKETBASE (LÓGICA REAL AQUÍ) ---");
-        console.log(`Se enviarán ${dataToSend.length} registros válidos.`);
+    // 4.Lógica de ENVÍO REAL a PocketBase
+    const submitToPocketBase = async () => {
+        setIsLoading(true);
+        let successCount = 0;
         
-        const finalPayload = dataToSend.map(record => ({
-            name: record.nombre,
-            lastName: record.apellido,
-            gradeLevel: record.grado,
-            username: record.username, // Usuario generado
-            password: record.password, // Contraseña generada
-            passwordConfirm: record.password, // Requerido por PocketBase
-            role: 'preceptor'
-        }));
-        
-        console.log("Payload simulado enviado a PocketBase:");
-        console.log(finalPayload);
-        // Aquí iría el fetch o el uso del SDK de PocketBase
+        try {
+            // PASO 1: Intentar autenticarse como administrador.
+            await authenticateAsAdmin();
+            
+            // PASO 2: Iterar y registrar cada preceptor válido.
+            const updatedData = [...processedData];
+            
+            for (let i = 0; i < updatedData.length; i++) {
+                const record = updatedData[i];
+                
+                // Solo procesamos los que tienen status VÁLIDO
+                if (record.status !== 'VÁLIDO') continue;
+
+                // Payload con los campos requeridos por PocketBase
+                const payload = {
+                    username: record.username,
+                    password: record.password,
+                    nombre: record.nombre,
+                    apellido: record.apellido,
+                    grado: record.grado,
+                    rol: 'preceptor', 
+                    activo: true
+                };
+
+                // Llamada real a la función de creación
+                const result = await createPreceptor(payload);
+
+                if (result.success) {
+                    updatedData[i].status = 'REGISTRADO';
+                    updatedData[i].message = `Registro exitoso en PocketBase.`;
+                    successCount++;
+                } else {
+                    updatedData[i].status = 'ERROR'; // Cambia a ERROR si PocketBase lo rechaza
+                    updatedData[i].message = `FALLÓ: ${result.errorMessage}`;
+                }
+            }
+
+            // PASO 3: Actualizar el estado y el conteo de registros exitosos
+            setProcessedData(updatedData);
+            setRegistrationCount(successCount);
+            
+            // PASO 4: Mover al paso de confirmación final
+            setStep(3);
+
+        } catch (authError) {
+            // Error si falla la autenticación de administrador o la conexión
+            showModal('Error Fatal de Conexión', (authError as Error).message, 'error');
+            setStep(2); 
+        } finally {
+            setIsLoading(false);
+        }
     };
 
+    //Llama a la nueva función de envío real
     const confirmAndSubmit = () => {
         const validRecords = processedData.filter(r => r.status === 'VÁLIDO');
-        
-        if (validRecords.length === 0) {
-            showModal('No hay Datos Válidos', 'No hay registros válidos para enviar a la base de datos.', 'error');
-            return;
-        }
 
-        simulatePocketBaseSubmission(validRecords); 
-        setStep(3);
+        if (validRecords.length === 0) {
+        showModal('No hay Datos Válidos', 'No hay registros válidos listos para enviar a la base de datos.', 'error');
+        return;
+    }
+
+     submitToPocketBase(); // Llamada a la función de envío real
     };
 
     const resetApp = () => {
@@ -177,14 +215,21 @@ const App: React.FC = () => {
         setFile(null);
         setProcessedData([]);
         setIsLoading(false);
+        setRegistrationCount(0); 
         // Nota: Si el input de tipo file no se limpia, se puede limpiar con una referencia (ref) si fuera necesario.
     };
     
-    // 5. Cálculos derivados para el Resumen
-    const { validCount, errorCount } = useMemo(() => {
+    // 5.Cálculos derivados para el Resumen (ahora incluye 'REGISTRADO')
+    const { validCount, errorCount, registeredCount } = useMemo(() => {
         const valid = processedData.filter(r => r.status === 'VÁLIDO').length;
         const error = processedData.filter(r => r.status === 'ERROR').length;
-        return { validCount: valid, errorCount: error };
+        const registered = processedData.filter(r => r.status === 'REGISTRADO').length;
+
+        return { 
+            validCount: valid, 
+            errorCount: error, 
+            registeredCount: registered
+        };
     }, [processedData]);
 
     // 6. Componentes de UI por paso
@@ -230,8 +275,9 @@ const App: React.FC = () => {
             <div className={`mb-4 p-4 rounded-xl shadow-md border-l-4 ${errorCount > 0 ? 'bg-red-50 border-red-500 text-red-800' : 'bg-green-50 border-green-500 text-green-800'}`}>
                 <p><span className="font-bold">Total de Registros:</span> {processedData.length}</p>
                 <p><span className="font-bold">Registros Válidos:</span> <span className="text-emerald-600 font-semibold">{validCount}</span></p>
+                <p><span className="font-bold">Registrados Exitosos:</span> <span className="text-blue-600 font-semibold">{registeredCount}</span></p>
                 <p><span className="font-bold">Registros con Error:</span> <span className="text-red-600 font-semibold">{errorCount}</span></p>
-                {errorCount > 0 && <p className="mt-2 text-sm font-medium">Solo los registros VÁLIDOS serán enviados a PocketBase.</p>}
+                {validCount > 0 && <p className="mt-2 text-sm font-medium">Solo los registros VÁLIDOS serán enviados a PocketBase.</p>}
             </div>
 
             {/* Tabla de Resultados (Usa la clase 'scroll-container' definida en masiva.css) */}
@@ -247,8 +293,20 @@ const App: React.FC = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {processedData.map((record, index) => {
                             const isError = record.status === 'ERROR';
-                            const rowColor = isError ? 'bg-red-50/50 hover:bg-red-100' : 'bg-white hover:bg-gray-50';
-                            const statusClass = isError ? 'text-red-600 font-semibold' : 'text-emerald-600 font-semibold';
+                            const isRegistered = record.status === 'REGISTRADO';
+                            
+                            let rowColor = 'bg-white hover:bg-gray-50';
+                            let statusClass = 'text-gray-600';
+
+                            if (isError) {
+                                rowColor = 'bg-red-50/50 hover:bg-red-100';
+                                statusClass = 'text-red-600 font-semibold';
+                            } else if (isRegistered) {
+                                rowColor = 'bg-blue-50/50 hover:bg-blue-100';
+                                statusClass = 'text-blue-600 font-semibold'; 
+                            } else if (record.status === 'VÁLIDO') {
+                                statusClass = 'text-emerald-600 font-semibold';
+                            }
 
                             return (
                                 <tr key={index} className={rowColor}>
@@ -275,11 +333,10 @@ const App: React.FC = () => {
             <div className="mt-6 flex justify-end">
                 <button 
                     onClick={confirmAndSubmit} 
-                    disabled={validCount === 0}
+                    disabled={validCount === 0  || isLoading}
                     // ESTILO TAILWIND
-                    className="px-8 py-3 bg-emerald-600 text-white font-bold text-lg rounded-full hover:bg-emerald-700 transition duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
-                >
-                    Aceptar y Enviar a PocketBase ({validCount} Registros)
+                    className="px-8 py-3 bg-emerald-600 text-white font-bold text-lg rounded-full hover:bg-emerald-700 transition duration-200 shadow-lg hover:shadow-xl disabled:opacity-50">
+                    {isLoading ? 'Enviando a Pocketbase...' : `Aceptar y Enviar a PocketBase (${validCount} Registros)`}
                 </button>
             </div>
         </section>
@@ -292,7 +349,8 @@ const App: React.FC = () => {
                 <svg className="w-8 h-8 flex-shrink-0 mt-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <div>
                     <h2 className="text-2xl font-bold">¡Proceso Completado Exitosamente!</h2>
-                    <p className="mt-2 text-lg">Los {validCount} registros válidos han sido enviados a PocketBase para su almacenamiento.</p>
+                    <p className="mt-2 text-lg">Se registraron **{registrationCount}** preceptores en PocketBase.</p>
+                    {(processedData.length - registrationCount) > 0 && <p className="mt-2 text-sm text-red-700">⚠️ {(processedData.length - registrationCount)} registros fallaron o tenían errores. Vuelve al paso anterior para ver los detalles.</p>}
                     <button 
                         onClick={resetApp} 
                         className="mt-4 px-6 py-2 text-sm font-semibold text-white bg-indigo-500 rounded-full hover:bg-indigo-600 transition shadow-md"
