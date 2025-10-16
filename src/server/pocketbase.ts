@@ -33,7 +33,7 @@ export async function authenticateAsAdmin(): Promise<boolean> {
  */
 export async function createPreceptor(preceptorData: {
   password: string;
-  username: string;
+  email: string;
   nombre: string;     
   apellido: string;   
   grado: string;      
@@ -53,7 +53,7 @@ export async function createPreceptor(preceptorData: {
     return { success: true };
   } catch (error) {
     console.error(
-      `Error al registrar preceptor: ${preceptorData.username}`,
+      `Error al registrar preceptor: ${preceptorData.email}`,
       error
     );
     return { success: false, errorMessage: JSON.stringify(error) };

@@ -7,7 +7,7 @@ interface PreceptorRecord {
     nombre: string;
     apellido: string;
     grado: string;
-    username: string;
+    email: string;
     password: string;
     status: 'VÁLIDO' | 'ERROR' | 'PENDIENTE'|'REGISTRADO';
     message: string;
@@ -30,7 +30,7 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [modal, setModal] = useState<ModalState>({ isOpen: false, title: '', message: '', type: 'info' });
     const [registrationCount, setRegistrationCount] = useState<number>(0); //Contador de registros exitosos
-    const REQUIRED_FIELDS = 3;
+    const REQUIRED_FIELDS = 4;
 
     // Funciones para manejar el Modal (reemplazo de alert())
     const showModal = useCallback((title: string, message: string, type: 'error' | 'info' | 'success' = 'info') => {
@@ -62,7 +62,7 @@ const App: React.FC = () => {
                 nombre: cols[0] || '',
                 apellido: cols[1] || '',
                 grado: cols[2] || '',
-                username: '',
+                email: cols[3] || '',
                 password: '',
                 status: 'PENDIENTE',
                 message: ''
@@ -80,9 +80,6 @@ const App: React.FC = () => {
                 const cleanName = record.nombre.replace(/\s/g, '').toLowerCase();   
                 const cleanLastName = record.apellido.replace(/\s/g, '').toLowerCase();
  
-                // GENERACIÓN AUTOMÁTICA DE USERNAME
-                record.username = `${cleanName}_${cleanLastName}`;
-                
                 // GENERACIÓN AUTOMÁTICA DE PASSWORD
                 record.password = cleanName + cleanLastName;
  
@@ -160,7 +157,7 @@ const App: React.FC = () => {
 
                 // Payload con los campos requeridos por PocketBase
                 const payload = {
-                    username: record.username,
+                    email: record.email,
                     password: record.password,
                     nombre: record.nombre,
                     apellido: record.apellido,
@@ -199,7 +196,6 @@ const App: React.FC = () => {
     };
 
     //Llama a la nueva función de envío real
-// [MODIFICADO] Llama a la nueva función de envío real
      const confirmAndSubmit = () => {
         const validRecords = processedData.filter(r => r.status === 'VÁLIDO');
 
@@ -220,7 +216,6 @@ const App: React.FC = () => {
     };
     
     // 5.Cálculos derivados para el Resumen (ahora incluye 'REGISTRADO')
-// 5. [MODIFICADO] Cálculos derivados para el Resumen (ahora incluye 'REGISTRADO')
     const { validCount, errorCount, registeredCount } = useMemo(() => {
         const valid = processedData.filter(r => r.status === 'VÁLIDO').length;
         const error = processedData.filter(r => r.status === 'ERROR').length;
@@ -287,7 +282,7 @@ const App: React.FC = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-100 sticky top-0">
                         <tr>
-                            {['#', 'Nombre', 'Apellido', 'Grado','Usuario (Auto)' ,'Contraseña (Auto)', 'Estado', 'Mensaje'].map((header) => (
+                            {['#', 'Nombre', 'Apellido', 'Grado','Email' ,'Contraseña (Auto)', 'Estado', 'Mensaje'].map((header) => (
                                 <th key={header} className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">{header}</th>
                             ))}
                         </tr>
@@ -316,7 +311,7 @@ const App: React.FC = () => {
                                     <td className="px-4 py-3 text-sm text-gray-900">{record.nombre}</td>
                                     <td className="px-4 py-3 text-sm text-gray-900">{record.apellido}</td>
                                     <td className="px-4 py-3 text-sm text-gray-900">{record.grado}</td>
-                                    <td className="px-4 py-3 text-sm text-gray-500 font-mono">{record.username || 'N/A'}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-500 font-mono">{record.email || 'N/A'}</td>
                                     <td className="px-4 py-3 text-sm text-gray-500 font-mono">{record.password || 'N/A'}</td>
                                     <td className="px-4 py-3 text-sm">
                                         <span className={statusClass}>
