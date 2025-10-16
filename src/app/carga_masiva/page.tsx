@@ -199,15 +199,16 @@ const App: React.FC = () => {
     };
 
     //Llama a la nueva función de envío real
-    const confirmAndSubmit = () => {
+// [MODIFICADO] Llama a la nueva función de envío real
+     const confirmAndSubmit = () => {
         const validRecords = processedData.filter(r => r.status === 'VÁLIDO');
 
         if (validRecords.length === 0) {
-        showModal('No hay Datos Válidos', 'No hay registros válidos listos para enviar a la base de datos.', 'error');
-        return;
-    }
+            showModal('No hay Datos Válidos', 'No hay registros válidos listos para enviar a la base de datos.', 'error');
+            return;
+         }
 
-     submitToPocketBase(); // Llamada a la función de envío real
+        submitToPocketBase(); // Llamada a la función de envío real
     };
 
     const resetApp = () => {
@@ -216,19 +217,20 @@ const App: React.FC = () => {
         setProcessedData([]);
         setIsLoading(false);
         setRegistrationCount(0); 
-        // Nota: Si el input de tipo file no se limpia, se puede limpiar con una referencia (ref) si fuera necesario.
     };
     
     // 5.Cálculos derivados para el Resumen (ahora incluye 'REGISTRADO')
+// 5. [MODIFICADO] Cálculos derivados para el Resumen (ahora incluye 'REGISTRADO')
     const { validCount, errorCount, registeredCount } = useMemo(() => {
         const valid = processedData.filter(r => r.status === 'VÁLIDO').length;
         const error = processedData.filter(r => r.status === 'ERROR').length;
+        // [NUEVO] Conteo de registros exitosos
         const registered = processedData.filter(r => r.status === 'REGISTRADO').length;
 
         return { 
             validCount: valid, 
             errorCount: error, 
-            registeredCount: registered
+            registeredCount: registered // [NUEVO]
         };
     }, [processedData]);
 
@@ -350,6 +352,7 @@ const App: React.FC = () => {
                 <div>
                     <h2 className="text-2xl font-bold">¡Proceso Completado Exitosamente!</h2>
                     <p className="mt-2 text-lg">Se registraron **{registrationCount}** preceptores en PocketBase.</p>
+
                     {(processedData.length - registrationCount) > 0 && <p className="mt-2 text-sm text-red-700">⚠️ {(processedData.length - registrationCount)} registros fallaron o tenían errores. Vuelve al paso anterior para ver los detalles.</p>}
                     <button 
                         onClick={resetApp} 

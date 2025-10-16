@@ -34,6 +34,11 @@ export async function authenticateAsAdmin(): Promise<boolean> {
 export async function createPreceptor(preceptorData: {
   password: string;
   username: string;
+  nombre: string;     
+  apellido: string;   
+  grado: string;      
+  rol: string;        
+  activo: boolean;    
 }): Promise<{ success: boolean; errorMessage?: string }> {
   const collectionName = "preceptores";
 
