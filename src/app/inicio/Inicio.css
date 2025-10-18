@@ -1,21 +1,25 @@
 /* ==========================================================================
-  1. VARIABLES GLOBALES Y CONFIGURACIÓN BASE
+   1. VARIABLES GLOBALES Y CONFIGURACIÓN BASE
    ========================================================================== */
 
 :root {
-  /* --- Paleta de Colores --- */
-  --color-background: #E3EDF2;
-  --color-card-background: #FFFFFF;
-  --color-text-primary: #0A0D25;
-  --color-text-secondary: #4E7D96;
-  --color-primary-green: #2c5e1a;
-  --color-border: #D1D9E6;
+  /* --- Nueva Paleta de Colores (Tonos Azules) --- */
+  --color-header-bg: #0F193E;      /* Azul muy oscuro para el fondo del header/sidebar */
+  --color-background: #B3ECF9;     /* Celeste muy claro para el fondo de la página */
+  --color-card-background: #FFFFFF;/* Blanco para las tarjetas */
+  --color-text-primary: #0F193E;   /* Azul oscuro para textos principales */
+  --color-text-secondary: #1C3A6F; /* Azul medio para textos secundarios */
+  --color-text-header: #FFFFFF;    /* Blanco para el texto dentro del header */
+  --color-accent: #6ACBED;         /* Celeste brillante para acentos y hovers */
+  --color-border: #77ACD2;         /* Azul claro para bordes sutiles */
+
+  /* --- Fuente Profesional --- */
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   
-  /* --- Colores de Tarjetas --- */
-  --card-assistencias-icon-bg: rgba(78, 125, 150, 0.15);
-  --card-assistencias-icon-fill: #4E7D96;
-  --card-assistencias-hover-bg: #D7E3EB;
+  /* --- Colores de Tarjetas (Manteniendo la diferenciación visual) --- */
+  --card-assistencias-icon-bg: rgba(40, 97, 152, 0.15);
+  --card-assistencias-icon-fill: #286198;
+  --card-assistencias-hover-bg: #E1F4FD;
   
   --card-ausentes-icon-bg: rgba(227, 100, 100, 0.15);
   --card-ausentes-icon-fill: #E36464;
@@ -25,15 +29,9 @@
   --card-justificaciones-icon-fill: #FFC94A;
   --card-justificaciones-hover-bg: #FDF4D9;
   
-  --card-sin-justificar-icon-bg: rgba(143, 155, 168, 0.15);
-  --card-sin-justificar-icon-fill: #8F9BA8;
-  --card-sin-justificar-hover-bg: #E1E6EB;
-  
-  /* --- Colores del Menú Lateral --- */
-  --sidebar-bg-color: #0A0D25;
-  --sidebar-text-color: #E3EDF2;
-  --sidebar-active-bg-color: #4E7D96;
-  --sidebar-active-text-color: #FFFFFF;
+  --card-sin-justificar-icon-bg: rgba(119, 172, 210, 0.15);
+  --card-sin-justificar-icon-fill: #77ACD2;
+  --card-sin-justificar-hover-bg: #EAF1F6;
 }
 
 body {
@@ -44,57 +42,39 @@ body {
 }
 
 /* ==========================================================================
-  2. LAYOUT PRINCIPAL (Contenedor, Sidebar y Contenido)
-  Estos son los estilos base que funcionan para MÓVIL primero.
+   2. LAYOUT PRINCIPAL (HEADER, SIDEBAR, CONTENIDO)
    ========================================================================== */
-
 /* --- Contenedor principal que organiza todo --- */
-.dashboard-container {
+.layout-container {
   display: flex;
   min-height: 100vh;
   position: relative;
 }
 
-/* --- Sidebar (Menú Lateral) --- */
+.main-content {
+  padding: 40px;
+  /* Espacio superior para que el contenido no quede debajo del header fijo */
+  padding-top: 120px;
+}
+
+/* --- Sidebar (Menú para Móvil) --- */
 .sidebar {
-  position: fixed; /* Se posiciona sobre todo lo demás */
+  position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 280px;
-  background-color: var(--sidebar-bg-color);
-  color: var(--sidebar-text-color);
+  background-color: var(--color-header-bg);
+  color: var(--color-text-header);
   padding: 20px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Asegura que esté por encima del contenido */
-  display: flex;
-  flex-direction: column;
-
-  /* Por defecto, está oculto fuera de la pantalla */
+  z-index: 1000;
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
 }
 
-/* --- Clase que se añade con JS para mostrar el sidebar --- */
 .sidebar.open {
   transform: translateX(0);
-}
-
-/* --- Contenido Principal --- */
-.main-content {
-  flex-grow: 1; /* Ocupa todo el espacio restante */
-  padding: 50px;
-  margin-left: 0; /* Por defecto no tiene margen */
-
-  /* Transición suave cuando se mueva */
-  transition: margin-left 0.3s ease-in-out;
-}
-
-/* --- Clase que se añade con JS para "empujar" el contenido --- */
-/* Esta es la regla clave que arregla el problema en todas las pantallas */
-.main-content.shifted {
-  /* Le damos un margen igual al ancho del sidebar */
-  margin-left: 280px; 
 }
 
 /* --- Overlay oscuro para el fondo en móvil --- */
@@ -105,9 +85,7 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999; /* Justo debajo del sidebar */
-  
-  /* Oculto por defecto */
+  z-index: 999;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -117,61 +95,44 @@ body {
   visibility: visible;
   opacity: 1;
 }
-
-
 /* ==========================================================================
-  3. ESTILOS DE COMPONENTES (Header, Tarjetas, Navegación, etc.)
+   3. ESTILOS DE COMPONENTES
    ========================================================================== */
 
-/* --- Encabezado --- */
-.dashboard-header {
-  font-size: 20px;
+/* --- Header Principal --- */
+.main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-
+  padding: 0 40px;
+  height: 80px;
+  background-color: var(--color-header-bg);
+  color: var(--color-text-header);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 900;
+  box-sizing: border-box;
 }
 
-.header-left {
+.logo-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.header-right {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.menu-icon {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.header-title h1 {
-  font-size: 1.8rem; /* Tamaño de título para móvil */
-  margin: 0;
-  color: var(--color-text-primary);
-}
-
-.current-date {
-  font-size: 20px;
-  margin: 0;
-  color: var(--color-text-secondary);
-}
-
-.subtitle {
-  font-size: 20px;
-  margin: 0; /* Mantenemos esto para resetear otros márgenes */
-  color: var(--color-text-secondary);
-  
-  /* Aquí agregamos el espacio inferior */
-  margin-bottom: 24px; /* Puedes ajustar el valor 24px a lo que prefieras */
+  gap: 20px;
 }
 
 .user-profile {
   width: 45px;
   height: 45px;
-  background-color: var(--color-primary-green);
-  color: white;
+  background-color: var(--color-accent);
+  color: var(--color-header-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -180,163 +141,171 @@ body {
   font-size: 1rem;
 }
 
-/* --- Navegación del Sidebar --- */
+/* --- Navegación de Escritorio --- */
+.desktop-nav .nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 15px;
+}
+
+.desktop-nav .nav-item a {
+  padding: 8px 16px;
+  color: var(--color-text-header);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.desktop-nav .nav-item a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.desktop-nav .nav-item.active a {
+  background-color: var(--color-accent);
+  color: var(--color-header-bg);
+}
+
+/* --- Navegación del Sidebar (Móvil) --- */
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-
-.company-name {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.sidebar-nav {
-  flex-grow: 1;
-}
-
-.nav-list {
+.sidebar-nav .nav-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
-.nav-item {
-  margin-bottom: 10px;
-}
-
-.nav-item a {
+.sidebar-nav .nav-item a {
   display: flex;
   align-items: center;
   gap: 15px;
   padding: 12px 15px;
   border-radius: 8px;
-  color: var(--sidebar-text-color);
+  color: var(--color-text-header);
   text-decoration: none;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.2s ease;
   font-size: 1.1rem;
 }
-
-.nav-item a:hover {
-  background-color: var(--sidebar-active-bg-color);
-  transform: translateX(5px);
+.sidebar-nav .nav-item a:hover {
+  background-color: var(--color-text-secondary);
 }
-
-.nav-item.active a {
-  background-color: var(--sidebar-active-bg-color);
-  color: var(--sidebar-active-text-color);
+.sidebar-nav .nav-item.active a {
+  background-color: var(--color-accent);
+  color: var(--color-header-bg);
   font-weight: 600;
-  position: relative;
+}
+.close-btn, .mobile-menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-header);
 }
 
-.nav-item.active a::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 5px;
-  background-color: white;
+/* --- Títulos y subtítulos del contenido principal --- */
+.page-title h1 {
+  font-size: 290%;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+.current-date, .subtitle {
+  font-size: 135%;
+  margin: 4px 0 0 0;
+  color: var(--color-text-secondary);
+}
+.subtitle {
+  margin-bottom: 32px;
 }
 
-/* --- Grilla de Tarjetas --- */
+
+/* --- Grilla y Tarjetas --- */
 .summary-cards-grid {
   display: grid;
-  grid-template-columns: 1fr; /* Una columna para móvil */
-  gap: 20px;
+  grid-template-columns: repeat(4, 300px);
+  gap: 24px;
 }
 
-/* --- Estilos de Tarjeta Individual --- */
 .card {
   background-color: var(--color-card-background);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  cursor: pointer;
+  padding: 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  border-color: var(--color-text-secondary);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-}
+.card-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
+.card-label { font-size: 150%; color: var(--color-text-secondary); margin:0; }
+.card-value { font-size: 2.5rem; font-weight: 400; color: var(--color-text-primary); margin: 0; }
 
-.card-label {
-  font-size: 20px;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.card-value {
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0;
-}
-
-/* --- Colores específicos de cada tarjeta --- */
+/* Colores específicos por tarjeta */
 .card.assistencias-card .card-icon { background-color: var(--card-assistencias-icon-bg); }
 .card.assistencias-card .card-icon svg { fill: var(--card-assistencias-icon-fill); }
-.card.assistencias-card:hover { background-color: var(--card-assistencias-hover-bg); }
+.card.assistencias-card:hover { border-color: var(--card-assistencias-icon-fill); }
 
 .card.ausentes-card .card-icon { background-color: var(--card-ausentes-icon-bg); }
 .card.ausentes-card .card-icon svg { fill: var(--card-ausentes-icon-fill); }
-.card.ausentes-card:hover { background-color: var(--card-ausentes-hover-bg); }
+.card.ausentes-card:hover { border-color: var(--card-ausentes-icon-fill); }
 
 .card.justificaciones-card .card-icon { background-color: var(--card-justificaciones-icon-bg); }
 .card.justificaciones-card .card-icon svg { fill: var(--card-justificaciones-icon-fill); }
-.card.justificaciones-card:hover { background-color: var(--card-justificaciones-hover-bg); }
+.card.justificaciones-card:hover { border-color: var(--card-justificaciones-icon-fill); }
 
 .card.sin-justificar-card .card-icon { background-color: var(--card-sin-justificar-icon-bg); }
 .card.sin-justificar-card .card-icon svg { fill: var(--card-sin-justificar-icon-fill); }
-.card.sin-justificar-card:hover { background-color: var(--card-sin-justificar-hover-bg); }
-
+.card.sin-justificar-card:hover { border-color: var(--card-sin-justificar-icon-fill); }
 
 /* ==========================================================================
-  4. ESTILOS PARA TABLET Y ESCRITORIO (Media Queries)
-  Aquí adaptamos el diseño para pantallas más grandes.
+   4. ESTILOS RESPONSIVOS (TABLET Y MÓVIL)
    ========================================================================== */
 
-/* --- Para Tablets (768px o más) --- */
-@media (min-width: 768px) {
-  .header-title h1 {
-    font-size: 2rem; /* Volvemos a agrandar el título */
+/* --- Tablet (992px o menos) --- */
+@media (max-width: 992px) {
+  /* Ocultamos la navegación de escritorio */
+  .desktop-nav {
+    display: none;
+  }
+  
+  /* Mostramos el botón de hamburguesa */
+  .mobile-menu-button {
+    display: block;
   }
 
   .summary-cards-grid {
-    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
   }
 
-  /* El overlay no es necesario en pantallas grandes, lo ocultamos */
-  .overlay {
-    display: none;
+  .main-header, .main-content {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
-/* --- Para Escritorio (1024px o más) --- */
-@media (min-width: 1024px) {
+/* --- Móvil (576px o menos) --- */
+@media (max-width: 576px) {
   .summary-cards-grid {
-    grid-template-columns: repeat(4, 1fr); /* Cuatro columnas */
+    grid-template-columns: 1fr; /* 1 columna */
   }
+
+  .page-title h1 {
+    font-size: 1.8rem;
+  }
+  
+  .card-value {
+    font-size: 2.2rem;
+  }
+}
+
+/* --- Ocultamos el botón de hamburguesa en escritorio por defecto --- */
+.mobile-menu-button {
+  display: none;
 }
