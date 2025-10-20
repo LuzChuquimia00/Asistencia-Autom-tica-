@@ -18,7 +18,7 @@
     "@tailwindcss/postcss": "^4.1.14",
     "axios": "^1.12.2",
     "dotenv": "^17.2.3",
-    "next": "15.5.4",
+    "next": "^15.5.5",
     "playwright": "^1.56.0",
     "pocketbase": "^0.26.2",
     "postcss": "^8.5.6",

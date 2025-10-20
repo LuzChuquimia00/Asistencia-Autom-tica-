@@ -1,4 +1,4 @@
-import PocketBase from "pocketbase";
+import PocketBase,{ClientResponseError} from "pocketbase";
 export const pb = new PocketBase("http://127.0.0.1:8090/");
 
 //autenticar como admin
@@ -50,12 +50,21 @@ export async function createPreceptor(preceptorData: {
 
   try {
     await pb.collection(collectionName).create(payload);
+    console.log(`Preceptor registrado: ${preceptorData.email}`);
     return { success: true };
   } catch (error) {
     console.error(
       `Error al registrar preceptor: ${preceptorData.email}`,
       error
     );
+    
+    let errorDetails: string;
+    
+    if (error instanceof ClientResponseError) {
+        errorDetails = JSON.stringify(error.response); 
+    } else {
+        errorDetails = String(error); 
+    }
     return { success: false, errorMessage: JSON.stringify(error) };
   }
 }

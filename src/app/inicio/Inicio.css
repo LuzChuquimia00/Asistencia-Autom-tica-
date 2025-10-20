@@ -1,105 +1,35 @@
 /* ==========================================================================
-   1. VARIABLES GLOBALES Y CONFIGURACIÓN BASE
+   1. VARIABLES Y CONFIGURACIÓN BASE (Sin cambios)
    ========================================================================== */
-
 :root {
-  /* --- Nueva Paleta de Colores (Tonos Azules) --- */
-  --color-header-bg: #0F193E;      /* Azul muy oscuro para el fondo del header/sidebar */
-  --color-background: #B3ECF9;     /* Celeste muy claro para el fondo de la página */
-  --color-card-background: #FFFFFF;/* Blanco para las tarjetas */
-  --color-text-primary: #0F193E;   /* Azul oscuro para textos principales */
-  --color-text-secondary: #1C3A6F; /* Azul medio para textos secundarios */
-  --color-text-header: #FFFFFF;    /* Blanco para el texto dentro del header */
-  --color-accent: #6ACBED;         /* Celeste brillante para acentos y hovers */
-  --color-border: #77ACD2;         /* Azul claro para bordes sutiles */
-
-  /* --- Fuente Profesional --- */
+  /* ... tus variables de color se mantienen igual ... */
+  --color-header-bg: #0F193E;
+  --color-background: #B3ECF9;
+  --color-card-background: #FFFFFF;
+  --color-text-primary: #0F193E;
+  --color-text-secondary: #1C3A6F;
+  --color-text-header: #FFFFFF;
+  --color-accent: #6ACBED;
+  --color-border: #77ACD2;
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  
-  /* --- Colores de Tarjetas (Manteniendo la diferenciación visual) --- */
-  --card-assistencias-icon-bg: rgba(40, 97, 152, 0.15);
   --card-assistencias-icon-fill: #286198;
-  --card-assistencias-hover-bg: #E1F4FD;
-  
-  --card-ausentes-icon-bg: rgba(227, 100, 100, 0.15);
-  --card-ausentes-icon-fill: #E36464;
-  --card-ausentes-hover-bg: #F0DCDC;
-  
-  --card-justificaciones-icon-bg: rgba(255, 201, 74, 0.15);
-  --card-justificaciones-icon-fill: #FFC94A;
-  --card-justificaciones-hover-bg: #FDF4D9;
-  
-  --card-sin-justificar-icon-bg: rgba(119, 172, 210, 0.15);
-  --card-sin-justificar-icon-fill: #77ACD2;
-  --card-sin-justificar-hover-bg: #EAF1F6;
+  --card-ausentes-icon-fill: #286198;
+  --card-justificaciones-icon-fill: #286198;
+  --card-sin-justificar-icon-fill: #286198;
 }
 
 body {
   background-color: var(--color-background);
   font-family: var(--font-family);
   margin: 0;
-  overflow-x: hidden; /* Previene el scroll horizontal no deseado */
+  overflow-x: hidden;
 }
 
 /* ==========================================================================
-   2. LAYOUT PRINCIPAL (HEADER, SIDEBAR, CONTENIDO)
-   ========================================================================== */
-/* --- Contenedor principal que organiza todo --- */
-.layout-container {
-  display: flex;
-  min-height: 100vh;
-  position: relative;
-}
-
-.main-content {
-  padding: 40px;
-  /* Espacio superior para que el contenido no quede debajo del header fijo */
-  padding-top: 120px;
-}
-
-/* --- Sidebar (Menú para Móvil) --- */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 280px;
-  background-color: var(--color-header-bg);
-  color: var(--color-text-header);
-  padding: 20px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-}
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-/* --- Overlay oscuro para el fondo en móvil --- */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.overlay.active {
-  visibility: visible;
-  opacity: 1;
-}
-/* ==========================================================================
-   3. ESTILOS DE COMPONENTES
+   2. LAYOUT PRINCIPAL (HEADER, SIDEBAR)
    ========================================================================== */
 
-/* --- Header Principal --- */
+/* --- Header Principal (Barra superior fija) --- */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -116,6 +46,18 @@ body {
   z-index: 900;
   box-sizing: border-box;
 }
+/* Esta regla agrupa y alinea el logo y el texto */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Espacio entre el logo y el texto */
+}
+
+/* Esta regla le da tamaño al logo */
+.header-logo-img {
+  height: 40px; /* Puedes ajustar este valor */
+  width: auto;
+} 
 
 .logo-text {
   font-size: 1.6rem;
@@ -139,6 +81,10 @@ body {
   border-radius: 50%;
   font-weight: bold;
   font-size: 1rem;
+}
+
+.mobile-menu-button {
+  display: none; /* Oculto en escritorio por defecto */
 }
 
 /* --- Navegación de Escritorio --- */
@@ -168,18 +114,40 @@ body {
   color: var(--color-header-bg);
 }
 
-/* --- Navegación del Sidebar (Móvil) --- */
+/* --- Sidebar (Menú deslizable para Móvil) --- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background-color: var(--color-header-bg);
+  color: var(--color-text-header);
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
+
 .sidebar-nav .nav-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
 .sidebar-nav .nav-item a {
   display: flex;
   align-items: center;
@@ -191,51 +159,139 @@ body {
   transition: background-color 0.2s ease;
   font-size: 1.1rem;
 }
+
 .sidebar-nav .nav-item a:hover {
   background-color: var(--color-text-secondary);
 }
+
 .sidebar-nav .nav-item.active a {
   background-color: var(--color-accent);
   color: var(--color-header-bg);
   font-weight: 600;
 }
+
 .close-btn, .mobile-menu-button {
   background: none;
   border: none;
   cursor: pointer;
   color: var(--color-text-header);
+  padding: 5px;
 }
 
-/* --- Títulos y subtítulos del contenido principal --- */
-.page-title h1 {
-  font-size: 290%;
+/* --- Overlay oscuro para el fondo en móvil --- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+/* ==========================================================================
+   3. NUEVA ESTRUCTURA DE CONTENIDO RESPONSIVO
+   ========================================================================== */
+
+/* --- Contenedor Principal del Contenido --- */
+/* CLAVE #1: Creamos una grilla que centrará el contenido pero permitirá que la imagen se escape. */
+.main-content {
+  display: grid;
+  /* La columna del medio tendrá un MÁXIMO de 1200px, y los lados actuarán como márgenes. */
+  grid-template-columns: 1fr minmax(auto, 1200px) 1fr;
+  padding-top: 80px; /* Espacio para el header fijo */
+}
+
+/* Por defecto, todos los elementos hijos viven en la columna del medio. */
+.main-content > * {
+  grid-column: 2;
+}
+
+/* --- Hero Banner (Imagen de Cabecera) --- */
+.hero-image-container {
+  /* CLAVE #2: Le damos permiso a la imagen para que ocupe TODAS las columnas. */
+  grid-column: 1 / -1;
+  
+  height: 350px;
+  margin-bottom: 40px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hero-image-container::before {
+  content: '';
+  position: absolute;
+  inset: 0; /* Abarca todo el contenedor */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+  z-index: 1;
+  border-radius: 0 0 16px 16px;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-text-content {
+  position: relative;
+  z-index: 2;
+  padding: 30px 40px;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hero-text-content h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.hero-text-content .current-date,
+.hero-text-content .subtitle {
+  font-size: 1.1rem;
   margin: 0;
-  color: var(--color-text-primary);
-}
-.current-date, .subtitle {
-  font-size: 135%;
-  margin: 4px 0 0 0;
-  color: var(--color-text-secondary);
-}
-.subtitle {
-  margin-bottom: 32px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-
-/* --- Grilla y Tarjetas --- */
+/* --- Grilla de Tarjetas --- */
+/* CLAVE #3: La grilla de tarjetas ahora es 100% fluida y automática. */
 .summary-cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, 300px);
   gap: 24px;
+  /* El navegador pondrá tantas columnas como quepan (auto-fit), 
+     donde cada una mide MÍNIMO 250px y se estira para ocupar el espacio (1fr). */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .card {
   background-color: var(--color-card-background);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 40px;
+  border-radius: 18px;
+  padding: 24px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  border-bottom-width: 6px;
+  border-bottom-style: solid;
 }
 
 .card:hover {
@@ -243,69 +299,61 @@ body {
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-.card-label { font-size: 150%; color: var(--color-text-secondary); margin:0; }
-.card-value { font-size: 2.5rem; font-weight: 400; color: var(--color-text-primary); margin: 0; }
+.card-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 12px;
+}
 
-/* Colores específicos por tarjeta */
-.card.assistencias-card .card-icon { background-color: var(--card-assistencias-icon-bg); }
+.card-label {
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.card-value {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 8px 0 0 0;
+}
+
+/* Colores de bordes e íconos */
+.card.assistencias-card { border-bottom-color: var(--card-assistencias-icon-fill); }
 .card.assistencias-card .card-icon svg { fill: var(--card-assistencias-icon-fill); }
-.card.assistencias-card:hover { border-color: var(--card-assistencias-icon-fill); }
 
-.card.ausentes-card .card-icon { background-color: var(--card-ausentes-icon-bg); }
+.card.ausentes-card { border-bottom-color: var(--card-ausentes-icon-fill); }
 .card.ausentes-card .card-icon svg { fill: var(--card-ausentes-icon-fill); }
-.card.ausentes-card:hover { border-color: var(--card-ausentes-icon-fill); }
 
-.card.justificaciones-card .card-icon { background-color: var(--card-justificaciones-icon-bg); }
+.card.justificaciones-card { border-bottom-color: var(--card-justificaciones-icon-fill); }
 .card.justificaciones-card .card-icon svg { fill: var(--card-justificaciones-icon-fill); }
-.card.justificaciones-card:hover { border-color: var(--card-justificaciones-icon-fill); }
 
-.card.sin-justificar-card .card-icon { background-color: var(--card-sin-justificar-icon-bg); }
+.card.sin-justificar-card { border-bottom-color: var(--card-sin-justificar-icon-fill); }
 .card.sin-justificar-card .card-icon svg { fill: var(--card-sin-justificar-icon-fill); }
-.card.sin-justificar-card:hover { border-color: var(--card-sin-justificar-icon-fill); }
 
 /* ==========================================================================
-   4. ESTILOS RESPONSIVOS (TABLET Y MÓVIL)
+   4. ESTILOS RESPONSIVOS SIMPLIFICADOS
    ========================================================================== */
+/* La nueva grilla maneja casi todo, solo necesitamos ajustar detalles finos. */
 
-/* --- Tablet (992px o menos) --- */
 @media (max-width: 992px) {
-  /* Ocultamos la navegación de escritorio */
-  .desktop-nav {
-    display: none;
-  }
+  /* Ocultamos/mostramos menús */
+  .desktop-nav { display: none; }
+  .mobile-menu-button { display: block; }
   
-  /* Mostramos el botón de hamburguesa */
-  .mobile-menu-button {
-    display: block;
-  }
-
-  .summary-cards-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
-  }
-
-  .main-header, .main-content {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+  /* Hacemos la cabecera un poco más pequeña */
+  .hero-image-container { height: 280px; }
+  .hero-text-content h1 { font-size: 2.5rem; }
 }
 
-/* --- Móvil (576px o menos) --- */
 @media (max-width: 576px) {
-  .summary-cards-grid {
-    grid-template-columns: 1fr; /* 1 columna */
-  }
-
-  .page-title h1 {
-    font-size: 1.8rem;
+  /* Reducimos los márgenes de la grilla principal en móvil */
+  .main-content {
+    grid-template-columns: 20px 1fr 20px;
   }
   
-  .card-value {
-    font-size: 2.2rem;
-  }
-}
-
-/* --- Ocultamos el botón de hamburguesa en escritorio por defecto --- */
-.mobile-menu-button {
-  display: none;
+  /* Hacemos la cabecera aún más pequeña */
+  .hero-image-container { height: 200px; }
+  .hero-text-content { padding: 20px; }
+  .hero-text-content h1 { font-size: 2rem; }
 }

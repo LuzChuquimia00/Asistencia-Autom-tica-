@@ -80,9 +80,12 @@ const App: React.FC = () => {
                 const cleanName = record.nombre.replace(/\s/g, '').toLowerCase();   
                 const cleanLastName = record.apellido.replace(/\s/g, '').toLowerCase();
  
-                // GENERACIÓN AUTOMÁTICA DE PASSWORD
-                record.password = cleanName + cleanLastName;
- 
+                const initialCap = cleanName.charAt(0).toLowerCase();
+                const restOfName = cleanName.substring(1);
+                
+                const generatedPassword = `${initialCap}${restOfName}${cleanLastName}1234`; 
+                
+                record.password = generatedPassword;
                 record.status = 'VÁLIDO';
                 record.message = 'Listo para registrar.';
             }
@@ -174,8 +177,35 @@ const App: React.FC = () => {
                     updatedData[i].message = `Registro exitoso en PocketBase.`;
                     successCount++;
                 } else {
-                    updatedData[i].status = 'ERROR'; // Cambia a ERROR si PocketBase lo rechaza
-                    updatedData[i].message = `FALLÓ: ${result.errorMessage}`;
+                    updatedData[i].status = 'ERROR'; 
+                    
+                    let userErrorMessage = 'FALLÓ: Error de validación.';
+                    
+                    try {
+                        // El result.errorMessage ahora está garantizado a ser el JSON de error
+                        const errorResponse = JSON.parse(result.errorMessage || '{}');
+                        
+                        // Si existe un error específico en el campo 'email' (típicamente por unicidad)
+                        if (errorResponse.data && errorResponse.data.email) {
+                            const errorCode = errorResponse.data.email.code;
+                            if (errorCode === 'validation_not_unique') {
+                                userErrorMessage = `FALLÓ: El email "${record.email}" ya está registrado (duplicado).`;
+                            } else {
+                                // Otro error de email, como formato inválido
+                                userErrorMessage = `FALLÓ: El email no es válido.`; 
+                            }
+                        } 
+                        // Error general del mensaje de PocketBase (ej. contraseña muy corta, campos faltantes)
+                        else if (errorResponse.message) {
+                            userErrorMessage = `FALLÓ: ${errorResponse.message}`;
+                        }
+
+                    } catch (e) {
+                        // Si el JSON no se pudo parsear (error de conexión, etc.)
+                        userErrorMessage = `FALLÓ: Error de servidor (código 400).`;
+                    }
+                    
+                    updatedData[i].message = userErrorMessage;
                 }
             }
 
@@ -340,25 +370,52 @@ const App: React.FC = () => {
     );
 
     // --- UI: Paso 3 (Confirmación Final) ---
-    const Step3Confirmation = (
-        <section>
-            <div className="p-8 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-lg flex items-start space-x-4">
-                <svg className="w-8 h-8 flex-shrink-0 mt-1 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <div>
-                    <h2 className="text-2xl font-bold">¡Proceso Completado Exitosamente!</h2>
-                    <p className="mt-2 text-lg">Se registraron **{registrationCount}** preceptores en PocketBase.</p>
+  const Step3Confirmation = () => {
+        // Lógica para determinar si fue un fallo TOTAL: 
+        const totalFailed = registeredCount === 0 && (errorCount + validCount) > 0;
+        
+        // Definición de las clases y colores según si es un fallo total o no
+        const boxClasses = totalFailed 
+            ? "p-8 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-lg flex items-start space-x-2" 
+            : "p-8 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-lg flex items-start space-x-2";
+        
+        const iconColor = totalFailed ? "text-red-600" : "text-green-600";
+        
+        // Títulos y mensajes solicitados
+        const title = totalFailed 
+            ? "¡Proceso Fallido!" 
+            : "¡Proceso Completado Exitosamente!";
+        
+        const messageContent = totalFailed 
+            ? "Usuario no registrado/Usuario existente."
+            : `Se registraron **${registrationCount}** preceptores.`;
+        
+        const showWarning = (processedData.length - registeredCount) > 0;
 
-                    {(processedData.length - registrationCount) > 0 && <p className="mt-2 text-sm text-red-700">⚠️ {(processedData.length - registrationCount)} registros fallaron o tenían errores. Vuelve al paso anterior para ver los detalles.</p>}
-                    <button 
-                        onClick={resetApp} 
-                        className="mt-4 px-6 py-2 text-sm font-semibold text-white bg-indigo-500 rounded-full hover:bg-indigo-600 transition shadow-md"
-                    >
-                        Cargar otro archivo
-                    </button>
+        // 💡 Retorno del JSX
+        return (
+            <section>
+                <div className={boxClasses}>
+                    <svg className={`w-8 h-8 flex-shrink-0 mt-1 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <h2 className="text-2xl font-bold">{title}</h2>
+                            <p className="mt-2 text-lg" dangerouslySetInnerHTML={{ __html: messageContent }}></p>
+
+                            {showWarning && !totalFailed && (
+                            <p className="mt-2 text-sm text-red-700">
+                                ⚠️ {(processedData.length - registeredCount)} registros fallaron o tenían errores. Vuelve a registrarte.
+                            </p>
+                            )}
+                         <button 
+                            onClick={resetApp} 
+                            className="mt-4 px-6 py-2 text-sm font-semibold text-white bg-indigo-500 rounded-full hover:bg-indigo-600 transition shadow-md" >
+                         Cargar otro archivo
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </section>
-    );
+            </section>
+        );
+    };  
 
     // --- Renderizado principal ---
     return (
@@ -372,7 +429,7 @@ const App: React.FC = () => {
             <main className="w-full max-w-4xl bg-white p-6 sm:p-10 rounded-2xl shadow-2xl space-y-8">
                 {step === 1 && Step1Upload}
                 {step === 2 && Step2Results}
-                {step === 3 && Step3Confirmation}
+                {step === 3 && Step3Confirmation()}
             </main>
 
             {/* Modal de Errores/Mensajes (Usa clases Tailwind para el diseño) */}
