@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import './Inicio.css';
-import { pb } from '../../server/pocketbase';
-
+import { pb } from '../../../server/pocketbase';
+import Header from '../../components/Header';
 const Inicio = () => {
   // Ahora "Inicio" controla su propio menú.
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -75,36 +75,7 @@ const Inicio = () => {
       {/* ================================================================== */}
       {/* 1. HEADER PRINCIPAL (Visible en todas las pantallas)             */}
       {/* ================================================================== */}
-      <header className="main-header">
-        <div className="header-left">
-          <img src="/assets/UBA-LOGO.png" alt="Logo de Geasis" className="header-logo-img" />
-          <span className="logo-text">.UBA Geasis</span>
-        </div>
-        
-        {/* --- Navegación para Escritorio (se oculta en móvil) --- */}
-        <nav className="desktop-nav">
-          <ul className="nav-list">
-            <li className="nav-item active"><a href="#inicio">Inicio</a></li>
-            <li className="nav-item"><a href="#alumnos">Alumnos</a></li>
-            <li className="nav-item"><a href="#asistencias">Asistencias</a></li>
-            <li className="nav-item"><a href="#justificaciones">Justificaciones</a></li>
-            <li className="nav-item"><a href="#comunicacion">Comunicación</a></li>
-          </ul>
-        </nav>
-
-        <div className="header-right">
-          {/*<div className="user-profile">
-            <span>ono</span>
-          </div>}*/}
-          {/* --- Botón "Hamburguesa" para abrir el sidebar en móvil --- */}
-          <button className="mobile-menu-button" onClick={toggleSidebar}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
-              <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
-            </svg>
-          </button>
-        </div>
-      </header>
-      
+      <Header toggleSidebar={toggleSidebar} />
       {/* ================================================================== */}
       {/* 2. SIDEBAR (Ahora funciona solo como menú móvil)                 */}
       {/* ================================================================== */}
@@ -120,9 +91,9 @@ const Inicio = () => {
         <nav className="sidebar-nav">
           {/* La lista de navegación del sidebar se mantiene igual */}
           <ul className="nav-list">
-             <li className="nav-item active"><a href="#inicio"><span>Inicio</span></a></li>
+             <li className="nav-item active"><a href="/"><span>Inicio</span></a></li>
              <li className="nav-item"><a href="#alumnos"><span>Alumnos</span></a></li>
-             <li className="nav-item"><a href="#asistencias"><span>Asistencias</span></a></li>
+             <li className="nav-item"><a href="/asistencia"><span>Asistencias</span></a></li>
              <li className="nav-item"><a href="#justificaciones"><span>Justificaciones</span></a></li>
              <li className="nav-item"><a href="#comunicacion"><span>Comunicación</span></a></li>
           </ul>
