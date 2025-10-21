@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import './Inicio.css';
-import { pb } from '../../../server/pocketbase';
-import Header from '../../components/Header';
+import { pb } from '../../server/pocketbase';
+import Header from '../components/Header';
 const Inicio = () => {
   // Ahora "Inicio" controla su propio menú.
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

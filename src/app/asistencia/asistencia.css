@@ -1,0 +1,130 @@
+/* Estilo general del contenedor de la página */
+.asistencia-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+}
+
+/* Cabecera */
+.asistencia-header {
+    margin-bottom: 2.5rem;
+}
+
+.asistencia-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.asistencia-header p {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 600px;
+    margin-bottom: 1.5rem;
+}
+
+/* Barra de Búsqueda */
+.search-bar-container {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-right: 3rem; /* Espacio para el ícono */
+    border: 1px solid #ccc;
+    border-radius: 9999px; /* Bordes redondeados */
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #0F193E; /* Color del header */
+    box-shadow: 0 0 0 3px rgba(15, 25, 62, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+}
+
+/* Contenedor principal de las planillas */
+.planillas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+/* Sección de cada año (1°, 2°, etc.) */
+.planilla-section {
+    width: 100%;
+}
+
+.planilla-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 1.5rem;
+}
+
+/* Grilla de tarjetas de cursos */
+.course-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.course-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.course-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #fff;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-image-placeholder {
+    height: 120px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #aaa;
+}
+
+.card-course-name {
+    padding: 1rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* --- Media Queries para Responsividad --- */
+@media (max-width: 768px) {
+    .course-cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+
+    .asistencia-header h1 {
+        font-size: 2rem;
+    }
+}

@@ -19,11 +19,11 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       <nav className="desktop-nav">
         <ul className="nav-list">
           {/* NOTA: Cambié las etiquetas <a> por <Link> de Next.js para una mejor navegación */}
-          <li className="nav-item active"><Link href="/">Inicio</Link></li>
-          <li className="nav-item"><Link href="/alumnos">Alumnos</Link></li>
+          <li className="nav-item active"><Link href="/inicio">Inicio</Link></li>
+          <li className="nav-item"><Link href="#alumnos">Alumnos</Link></li>
           <li className="nav-item"><Link href="/asistencia">Asistencias</Link></li>
-          <li className="nav-item"><Link href="/justificaciones">Justificaciones</Link></li>
-          <li className="nav-item"><Link href="/comunicacion">Comunicación</Link></li>
+          <li className="nav-item"><Link href="#justificaciones">Justificaciones</Link></li>
+          <li className="nav-item"><Link href="#comunicacion">Comunicación</Link></li>
         </ul>
       </nav>
 
