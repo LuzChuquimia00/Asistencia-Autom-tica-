@@ -17,14 +17,10 @@
   --card-justificaciones-icon-fill: #286198;
   --card-sin-justificar-icon-fill: #286198;
 }
-
-body {
-  background-color: var(--color-background);
-  font-family: var(--font-family);
-  margin: 0;
-  overflow-x: hidden;
+.layout-container {
+    background-color: var(--color-background);
+    min-height: 100vh; /* Asegura que cubra toda la altura */
 }
-
 /* ==========================================================================
    2. LAYOUT PRINCIPAL (HEADER, SIDEBAR)
    ========================================================================== */
@@ -204,17 +200,7 @@ body {
 
 /* --- Contenedor Principal del Contenido --- */
 /* CLAVE #1: Creamos una grilla que centrará el contenido pero permitirá que la imagen se escape. */
-.main-content {
-  display: grid;
-  /* La columna del medio tendrá un MÁXIMO de 1200px, y los lados actuarán como márgenes. */
-  grid-template-columns: 1fr minmax(auto, 1200px) 1fr;
-  padding-top: 80px; /* Espacio para el header fijo */
-}
 
-/* Por defecto, todos los elementos hijos viven en la columna del medio. */
-.main-content > * {
-  grid-column: 2;
-}
 
 /* --- Hero Banner (Imagen de Cabecera) --- */
 .hero-image-container {
@@ -273,12 +259,15 @@ body {
 
 /* --- Grilla de Tarjetas --- */
 /* CLAVE #3: La grilla de tarjetas ahora es 100% fluida y automática. */
+/* --- Grilla de Tarjetas --- */
 .summary-cards-grid {
   display: grid;
-  gap: 24px;
-  /* El navegador pondrá tantas columnas como quepan (auto-fit), 
-     donde cada una mide MÍNIMO 250px y se estira para ocupar el espacio (1fr). */
+  gap: 24px; /* O el gap que prefieras */
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+  /* --- ESTAS DOS LÍNEAS SON LA SOLUCIÓN --- */
+  max-width: 1200px; /* Define un ancho máximo para la grilla */
+  margin: 0 auto;    /* Centra la grilla horizontalmente */
 }
 
 .card {

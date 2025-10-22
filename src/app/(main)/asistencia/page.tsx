@@ -33,6 +33,33 @@ const allCoursesByYear = [
             { id: '3D', name: '3D' },
         ],
     },
+    {
+        year: '4°',
+        courses: [
+            { id: '4A', name: '4A' },
+            { id: '4B', name: '4B' },
+            { id: '4C', name: '4C' },
+            { id: '4D', name: '4D' },
+        ],
+    },
+    {
+        year: '5°',
+        courses: [
+            { id: '5A', name: '5A' },
+            { id: '5B', name: '5B' },
+            { id: '5C', name: '5C' },
+            { id: '5D', name: '5D' },
+        ],
+    },
+    {
+        year: '6°',
+        courses: [
+            { id: '6A', name: '6A' },
+            { id: '6B', name: '6B' },
+            { id: '6C', name: '6C' },
+            { id: '6D', name: '6D' },
+        ],
+    },
     // Puedes agregar 4to, 5to y 6to año aquí.
 ];
 

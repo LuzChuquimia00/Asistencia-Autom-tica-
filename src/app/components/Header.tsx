@@ -1,13 +1,14 @@
 'use client';
 import React from 'react';
-import Link from 'next/link'; // Importamos Link para la navegación
+import Link from 'next/link';
 import './Header.css';
-// Definimos los tipos de las props que el componente recibirá
+
 interface HeaderProps {
   toggleSidebar: () => void;
+  currentPath: string; // <-- Añadimos la prop currentPath
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+const Header: React.FC<HeaderProps> = ({ toggleSidebar, currentPath }) => {
   return (
     <header className="main-header">
       <div className="header-left">
@@ -15,20 +16,29 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         <span className="logo-text">.UBA Geasis</span>
       </div>
       
-      {/* --- Navegación para Escritorio (se oculta en móvil) --- */}
       <nav className="desktop-nav">
         <ul className="nav-list">
-          {/* NOTA: Cambié las etiquetas <a> por <Link> de Next.js para una mejor navegación */}
-          <li className="nav-item active"><Link href="/inicio">Inicio</Link></li>
-          <li className="nav-item"><Link href="#alumnos">Alumnos</Link></li>
-          <li className="nav-item"><Link href="/asistencia">Asistencias</Link></li>
-          <li className="nav-item"><Link href="#justificaciones">Justificaciones</Link></li>
-          <li className="nav-item"><Link href="#comunicacion">Comunicación</Link></li>
+          {/* Usamos una expresión para aplicar la clase 'active' si la ruta coincide */}
+          <li className={`nav-item ${currentPath === '/inicio' ? 'active' : ''}`}>
+            <Link href="/inicio">Inicio</Link>
+          </li>
+          {/* Asumo que 'alumnos' es una página '/alumnos', no un ancla '#alumnos' */}
+          <li className={`nav-item ${currentPath === '/alumnos' ? 'active' : ''}`}>
+            <Link href="/alumnos">Alumnos</Link>
+          </li>
+          <li className={`nav-item ${currentPath === '/asistencia' ? 'active' : ''}`}>
+            <Link href="/asistencia">Asistencias</Link>
+          </li>
+          <li className={`nav-item ${currentPath === '/justificaciones' ? 'active' : ''}`}>
+            <Link href="/justificaciones">Justificaciones</Link>
+          </li>
+          <li className={`nav-item ${currentPath === '/comunicacion' ? 'active' : ''}`}>
+            <Link href="/comunicacion">Comunicación</Link>
+          </li>
         </ul>
       </nav>
 
       <div className="header-right">
-        {/* --- Botón "Hamburguesa" para abrir el sidebar en móvil --- */}
         <button className="mobile-menu-button" onClick={toggleSidebar}>
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
             <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>

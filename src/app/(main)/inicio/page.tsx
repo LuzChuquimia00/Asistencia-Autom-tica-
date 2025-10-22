@@ -1,14 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { ClientResponseError } from 'pocketbase';
 import './Inicio.css';
-import { pb } from '../../server/pocketbase';
-import Header from '../components/Header';
+import { pb } from '../../../server/pocketbase';
 const Inicio = () => {
-  // Ahora "Inicio" controla su propio menú.
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
   const [presentes, setPresentes] = useState(0);
   const [totalAlumnos, setTotalAlumnos] = useState(0);
   const [ausentes, setAusentes] = useState(0);
@@ -34,16 +29,26 @@ const Inicio = () => {
           setSinJustificaciones(summaryData.unjustified_count);
         }
 
-      } catch (err) {
-          setError('Error al conectar con la base de datos.');
-          console.error("Error fetching data from PocketBase:", err);
-      } finally {
-        if (!ignore) {
-          setLoading(false);
+      } catch (err) { 
+        if (err instanceof ClientResponseError) {
+            if (err.isAbort) {
+                console.log("Request was cancelled, this is normal on navigation.");
+                return; 
+            }
         }
+        if (!ignore) {
+            setError('Error al conectar con la base de datos.');
+            console.error("Error fetching data from PocketBase:", err);
+        }
+    } finally {
+       if (!ignore) {
+              setLoading(false);
+    }
       }
     };
 
+
+    
     fetchDashboardData();
 
     pb.collection('students').subscribe('*', fetchDashboardData);
@@ -73,40 +78,9 @@ const Inicio = () => {
   return (
     <div className="layout-container">
       {/* ================================================================== */}
-      {/* 1. HEADER PRINCIPAL (Visible en todas las pantallas)             */}
-      {/* ================================================================== */}
-      <Header toggleSidebar={toggleSidebar} />
-      {/* ================================================================== */}
-      {/* 2. SIDEBAR (Ahora funciona solo como menú móvil)                 */}
-      {/* ================================================================== */}
-      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
-          <h2 className="company-name">Menú</h2>
-          <button className="close-btn" onClick={toggleSidebar}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#FFFFFF">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-            </svg>
-          </button>
-        </div>
-        <nav className="sidebar-nav">
-          {/* La lista de navegación del sidebar se mantiene igual */}
-          <ul className="nav-list">
-             <li className="nav-item active"><a href="/"><span>Inicio</span></a></li>
-             <li className="nav-item"><a href="#alumnos"><span>Alumnos</span></a></li>
-             <li className="nav-item"><a href="/asistencia"><span>Asistencias</span></a></li>
-             <li className="nav-item"><a href="#justificaciones"><span>Justificaciones</span></a></li>
-             <li className="nav-item"><a href="#comunicacion"><span>Comunicación</span></a></li>
-          </ul>
-        </nav>
-      </aside>
-
-      {/* Overlay para el fondo en móvil */}
-      <div className={`overlay ${isSidebarOpen ? 'active' : ''}`} onClick={toggleSidebar}></div>
-
-      {/* ================================================================== */}
       {/* 3. CONTENIDO PRINCIPAL                                           */}
       {/* ================================================================== */}
-      <main className="main-content">
+      <main>
         <div className="hero-image-container">
           <img src='\img\3.jpeg' alt="Fachada de la UBA" className="hero-image" />
           <div className="hero-text-content">

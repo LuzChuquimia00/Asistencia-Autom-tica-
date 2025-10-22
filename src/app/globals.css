@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+/* En app/globals.css */
+:root{
+   --color-header-bg: #0F193E;
+   --color-text-header: #FFFFFF;
+}
+.main-content {
+  padding-top: 80px; /* Misma altura que tu Header */
+}

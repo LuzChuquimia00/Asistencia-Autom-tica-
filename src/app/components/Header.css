@@ -1,30 +1,4 @@
-/* ==========================================================================
-   ESTILOS PARA EL HEADER Y EL SIDEBAR (MENÚ)
-   ========================================================================== */
-:root {
-  --color-header-bg: #0F193E;
-  --color-background: #B3ECF9;
-  --color-card-background: #FFFFFF;
-  --color-text-primary: #0F193E;
-  --color-text-secondary: #1C3A6F;
-  --color-text-header: #FFFFFF;
-  --color-accent: #6ACBED;
-  --color-border: #77ACD2;
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --card-assistencias-icon-fill: #286198;
-  --card-ausentes-icon-fill: #286198;
-  --card-justificaciones-icon-fill: #286198;
-  --card-sin-justificar-icon-fill: #286198;
-}
-body {
-  background-color: var(--color-background);
-  font-family: var(--font-family);
-  margin: 0;
-  overflow-x: hidden;
-}
-/*/* ==========================================================================
-   ESTILOS PARA EL HEADER Y EL SIDEBAR (MENÚ)
-   ========================================================================== */
+
 
 /* --- Header Principal (Barra superior fija) --- */
 .main-header {
@@ -109,6 +83,7 @@ body {
 .desktop-nav .nav-item.active a {
   background-color: var(--color-accent);
   color: var(--color-header-bg);
+  font-weight: 600;
 }
 
 /* --- Sidebar (Menú deslizable para Móvil) --- */
