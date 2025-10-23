@@ -57,9 +57,7 @@ const Inicio = () => {
 
     return () => {
       ignore = true;
-      pb.collection('students').unsubscribe();
-      pb.collection('attendance_management').unsubscribe();
-      pb.collection('management_of_justifications').unsubscribe();
+      pb.realtime.unsubscribe();
     };
   }, []);
 
