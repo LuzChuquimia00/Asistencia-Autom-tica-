@@ -103,6 +103,7 @@ export async function createStudents(count: number): Promise<Student[]> {
     const response = await consultas.post("/api/collections/students/records", {
       name: `StudentName${i}`,
       surname: `StudentSurname${i}`,
+      curso: "1A",
       date: dateOfBirth,
       blood_type: ["A+"],
     });

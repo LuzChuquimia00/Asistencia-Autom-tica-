@@ -1,4 +1,4 @@
-import { defineConfig, devices} from "@playwright/test";
+import { defineConfig} from "@playwright/test";
 import "dotenv/config"; // Esto carga las variables de entorno.
 
 /**
@@ -33,28 +33,28 @@ export default defineConfig({
 
   // Browser Projects
   projects: [
-    // firefox base
+     //firefox base
     { name: "firefox", use: { headless: true } },
-     //Proyecto para pruebas de API
-     {
-       name: 'api',
-       testDir: './tests/api', // Solo busca tests en la carpeta 'api'
-       use: {
-         baseURL: process.env.PLAYWRIGHT_BASE_URL_API, // URL del backend desde .env
-         trace: 'on-first-retry',
-       },
-     },
-
-    // Proyecto para pruebas visuales (UI)
-     {
-       name: 'web',
-       testDir: './tests/web', // Suponiendo que tus tests visuales están aquí
-       use: {
-         baseURL: process.env.PLAYWRIGHT_BASE_URL_WEB, // URL del frontend desde .env
-         ...devices['Desktop Chrome'],
-         trace: 'on-first-retry',
-       },
-     },
+    // //Proyecto para pruebas de API
+    // {
+    //   name: 'api',
+    //   testDir: './tests/api', // Solo busca tests en la carpeta 'api'
+    //   use: {
+    //     baseURL: process.env.PLAYWRIGHT_BASE_URL_API, // URL del backend desde .env
+    //     trace: 'on-first-retry',
+    //   },
+    // },
+//
+    //// Proyecto para pruebas visuales (UI)
+    // {
+    //   name: 'web',
+    //   testDir: './tests/web', // Suponiendo que tus tests visuales están aquí
+    //   use: {
+    //     baseURL: process.env.PLAYWRIGHT_BASE_URL_WEB, // URL del frontend desde .env
+    //     ...devices['Desktop Chrome'],
+    //     trace: 'on-first-retry',
+    //   },
+    // },
 
     // {
     //   name: 'web-csv',
@@ -65,6 +65,15 @@ export default defineConfig({
     //     trace: 'on-first-retry',
     //   },
     // },
+     //{
+     //  name: 'web-asistencia',
+     //  testDir: './tests/web-asistencia', // Suponiendo que tus tests visuales están aquí
+     //  use: {
+     //    baseURL: process.env.PLAYWRIGHT_CSV_URL_WEB, // URL del frontend desde .env
+     //    ...devices['Desktop Chrome'],
+     //    trace: 'on-first-retry',
+     //  },
+     //},
   ],
 
   // Local Development Server

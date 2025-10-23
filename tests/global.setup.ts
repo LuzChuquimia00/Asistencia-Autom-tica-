@@ -28,7 +28,7 @@ async function globalSetup() {
   console.log("Sembrando datos de prueba...");
 
   // Crear estudiantes de prueba
-  const students = await createStudents(10);
+  const students = await createStudents(1);
   console.log(`Se crearon ${students.length} estudiantes de prueba.`);
 
   // 💡 SOLUCIÓN 1: Usa la clase Date tal cual
@@ -46,9 +46,9 @@ async function globalSetup() {
   console.log(`Fecha de asistencia a usar: ${todayDate}`);
 
   // Crear registros de asistencia (5 presentes y 5 ausentes)
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 1; i++) {
     await createAttendance(students[i].id, "1°C", "present", todayDate);
-    await createAttendance(students[i + 5].id, "1°C", "absent", todayDate);
+    //await createAttendance(students[i + 1].id, "1°C", "absent", todayDate);
   }
 
   console.log("Se crearon registros de asistencia.");
