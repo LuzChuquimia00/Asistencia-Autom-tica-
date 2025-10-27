@@ -1,6 +1,6 @@
 import PocketBase, { ClientResponseError } from "pocketbase";
 
-// 1. CORRECCIÓN: Quitamos el "/_" del final de la URL.
+// conexion a PocketBase
 export const pb = new PocketBase("http://127.0.0.1:8090");
 
 // 2. MEJORA: Añadimos el manejo de sesión con localStorage del otro proyecto.

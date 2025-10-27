@@ -9,7 +9,7 @@ interface PreceptorRecord {
     grado: string;
     email: string;
     password: string;
-    status: 'VÁLIDO' | 'ERROR' | 'PENDIENTE'|'REGISTRADO';
+    status: 'VÁLIDO' | 'ERROR' | 'PENDIENTE' | 'REGISTRADO';
     message: string;
 }
 
@@ -49,7 +49,7 @@ const App: React.FC = () => {
         }
 
         const results: PreceptorRecord[] = [];
-        
+
         // La validación de cabecera es sencilla, solo asumimos el orden: nombre,apellido,grado
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
@@ -57,7 +57,7 @@ const App: React.FC = () => {
 
             // Simple split por coma. Se podría mejorar con una librería para manejo de comillas/saltos de línea.
             const cols = line.split(',').map(c => c.trim());
-            
+
             let record: PreceptorRecord = {
                 nombre: cols[0] || '',
                 apellido: cols[1] || '',
@@ -67,7 +67,7 @@ const App: React.FC = () => {
                 status: 'PENDIENTE',
                 message: ''
             };
-            
+
             // Criterio de Aceptación: Debe haber 3 campos y no deben estar vacíos
             if (cols.length < REQUIRED_FIELDS) {
                 record.status = 'ERROR';
@@ -77,19 +77,19 @@ const App: React.FC = () => {
                 record.message = 'Verifica que no tengas algún campo vacío.';
             } else {
                 // Limpieza de nombre y apellido para credenciales
-                const cleanName = record.nombre.replace(/\s/g, '').toLowerCase();   
+                const cleanName = record.nombre.replace(/\s/g, '').toLowerCase();
                 const cleanLastName = record.apellido.replace(/\s/g, '').toLowerCase();
- 
+
                 const initialCap = cleanName.charAt(0).toLowerCase();
                 const restOfName = cleanName.substring(1);
-                
-                const generatedPassword = `${initialCap}${restOfName}${cleanLastName}1234`; 
-                
+
+                const generatedPassword = `${initialCap}${restOfName}${cleanLastName}1234`;
+
                 record.password = generatedPassword;
                 record.status = 'VÁLIDO';
                 record.message = 'Listo para registrar.';
             }
-            
+
             results.push(record);
         }
         return results;
@@ -124,7 +124,7 @@ const App: React.FC = () => {
                 const csvText = e.target?.result as string;
                 const data = parseCSV(csvText);
                 setProcessedData(data);
-                
+
                 // Criterio de Aceptación: Tras cargar el archivo, debe darse a conocer los resultados
                 setStep(2);
             } catch (error) {
@@ -144,17 +144,17 @@ const App: React.FC = () => {
     const submitToPocketBase = async () => {
         setIsLoading(true);
         let successCount = 0;
-        
+
         try {
             // PASO 1: Intentar autenticarse como administrador.
             await authenticateAsAdmin();
-            
+
             // PASO 2: Iterar y registrar cada preceptor válido.
             const updatedData = [...processedData];
-            
+
             for (let i = 0; i < updatedData.length; i++) {
                 const record = updatedData[i];
-                
+
                 // Solo procesamos los que tienen status VÁLIDO
                 if (record.status !== 'VÁLIDO') continue;
 
@@ -165,7 +165,7 @@ const App: React.FC = () => {
                     nombre: record.nombre,
                     apellido: record.apellido,
                     grado: record.grado,
-                    rol: 'preceptor', 
+                    rol: 'preceptor',
                     activo: true
                 };
 
@@ -177,14 +177,14 @@ const App: React.FC = () => {
                     updatedData[i].message = `Registro exitoso en PocketBase.`;
                     successCount++;
                 } else {
-                    updatedData[i].status = 'ERROR'; 
-                    
+                    updatedData[i].status = 'ERROR';
+
                     let userErrorMessage = 'FALLÓ: Error de validación.';
-                    
+
                     try {
                         // El result.errorMessage ahora está garantizado a ser el JSON de error
                         const errorResponse = JSON.parse(result.errorMessage || '{}');
-                        
+
                         // Si existe un error específico en el campo 'email' (típicamente por unicidad)
                         if (errorResponse.data && errorResponse.data.email) {
                             const errorCode = errorResponse.data.email.code;
@@ -192,9 +192,9 @@ const App: React.FC = () => {
                                 userErrorMessage = `FALLÓ: El email "${record.email}" ya está registrado (duplicado).`;
                             } else {
                                 // Otro error de email, como formato inválido
-                                userErrorMessage = `FALLÓ: El email no es válido.`; 
+                                userErrorMessage = `FALLÓ: El email no es válido.`;
                             }
-                        } 
+                        }
                         // Error general del mensaje de PocketBase (ej. contraseña muy corta, campos faltantes)
                         else if (errorResponse.message) {
                             userErrorMessage = `FALLÓ: ${errorResponse.message}`;
@@ -204,7 +204,7 @@ const App: React.FC = () => {
                         // Si el JSON no se pudo parsear (error de conexión, etc.)
                         userErrorMessage = `FALLÓ: Error de servidor (código 400).`;
                     }
-                    
+
                     updatedData[i].message = userErrorMessage;
                 }
             }
@@ -212,27 +212,27 @@ const App: React.FC = () => {
             // PASO 3: Actualizar el estado y el conteo de registros exitosos
             setProcessedData(updatedData);
             setRegistrationCount(successCount);
-            
+
             // PASO 4: Mover al paso de confirmación final
             setStep(3);
 
         } catch (authError) {
             // Error si falla la autenticación de administrador o la conexión
             showModal('Error Fatal de Conexión', (authError as Error).message, 'error');
-            setStep(2); 
+            setStep(2);
         } finally {
             setIsLoading(false);
         }
     };
 
     //Llama a la nueva función de envío real
-     const confirmAndSubmit = () => {
+    const confirmAndSubmit = () => {
         const validRecords = processedData.filter(r => r.status === 'VÁLIDO');
 
         if (validRecords.length === 0) {
             showModal('No hay Datos Válidos', 'No hay registros válidos listos para enviar a la base de datos.', 'error');
             return;
-         }
+        }
 
         submitToPocketBase(); // Llamada a la función de envío real
     };
@@ -242,9 +242,9 @@ const App: React.FC = () => {
         setFile(null);
         setProcessedData([]);
         setIsLoading(false);
-        setRegistrationCount(0); 
+        setRegistrationCount(0);
     };
-    
+
     // 5.Cálculos derivados para el Resumen (ahora incluye 'REGISTRADO')
     const { validCount, errorCount, registeredCount } = useMemo(() => {
         const valid = processedData.filter(r => r.status === 'VÁLIDO').length;
@@ -252,33 +252,33 @@ const App: React.FC = () => {
         // [NUEVO] Conteo de registros exitosos
         const registered = processedData.filter(r => r.status === 'REGISTRADO').length;
 
-        return { 
-            validCount: valid, 
-            errorCount: error, 
+        return {
+            validCount: valid,
+            errorCount: error,
             registeredCount: registered // [NUEVO]
         };
     }, [processedData]);
 
     // 6. Componentes de UI por paso
-    
+
     // --- UI: Paso 1 (Carga de Archivo) ---
     const Step1Upload = (
         <section className="border-b pb-6 space-y-4">
             <h2 className="text-2xl font-semibold text-gray-700">Paso 1: Cargar Archivo CSV</h2>
-            
+
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <input 
-                    type="file" 
-                    id="csvFileInput" 
-                    accept=".csv" 
+                <input
+                    type="file"
+                    id="csvFileInput"
+                    accept=".csv"
                     onChange={handleFileChange}
                     disabled={isLoading}
                     // ESTILO TAILWIND
                     className="flex-grow w-full sm:w-auto text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition duration-150 rounded-lg p-2 border border-gray-300"
                 />
-                
-                <button 
-                    onClick={processFile} 
+
+                <button
+                    onClick={processFile}
                     disabled={!file || isLoading}
                     // ESTILO TAILWIND
                     className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
@@ -297,7 +297,7 @@ const App: React.FC = () => {
     const Step2Results = (
         <section className="space-y-6">
             <h2 className="text-2xl font-semibold text-gray-700">Paso 2: Resultados del Procesamiento</h2>
-            
+
             {/* Resumen */}
             <div className={`mb-4 p-4 rounded-xl shadow-md border-l-4 ${errorCount > 0 ? 'bg-red-50 border-red-500 text-red-800' : 'bg-green-50 border-green-500 text-green-800'}`}>
                 <p><span className="font-bold">Total de Registros:</span> {processedData.length}</p>
@@ -312,7 +312,7 @@ const App: React.FC = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-100 sticky top-0">
                         <tr>
-                            {['#', 'Nombre', 'Apellido', 'Grado','Email' ,'Contraseña (Auto)', 'Estado', 'Mensaje'].map((header) => (
+                            {['#', 'Nombre', 'Apellido', 'Grado', 'Email', 'Contraseña (Auto)', 'Estado', 'Mensaje'].map((header) => (
                                 <th key={header} className="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">{header}</th>
                             ))}
                         </tr>
@@ -321,7 +321,7 @@ const App: React.FC = () => {
                         {processedData.map((record, index) => {
                             const isError = record.status === 'ERROR';
                             const isRegistered = record.status === 'REGISTRADO';
-                            
+
                             let rowColor = 'bg-white hover:bg-gray-50';
                             let statusClass = 'text-gray-600';
 
@@ -330,7 +330,7 @@ const App: React.FC = () => {
                                 statusClass = 'text-red-600 font-semibold';
                             } else if (isRegistered) {
                                 rowColor = 'bg-blue-50/50 hover:bg-blue-100';
-                                statusClass = 'text-blue-600 font-semibold'; 
+                                statusClass = 'text-blue-600 font-semibold';
                             } else if (record.status === 'VÁLIDO') {
                                 statusClass = 'text-emerald-600 font-semibold';
                             }
@@ -358,9 +358,9 @@ const App: React.FC = () => {
 
             {/* Botón de Confirmación */}
             <div className="mt-6 flex justify-end">
-                <button 
-                    onClick={confirmAndSubmit} 
-                    disabled={validCount === 0  || isLoading}
+                <button
+                    onClick={confirmAndSubmit}
+                    disabled={validCount === 0 || isLoading}
                     // ESTILO TAILWIND
                     className="px-8 py-3 bg-emerald-600 text-white font-bold text-lg rounded-full hover:bg-emerald-700 transition duration-200 shadow-lg hover:shadow-xl disabled:opacity-50">
                     {isLoading ? 'Enviando a Pocketbase...' : `Aceptar y Enviar a PocketBase (${validCount} Registros)`}
@@ -370,57 +370,57 @@ const App: React.FC = () => {
     );
 
     // --- UI: Paso 3 (Confirmación Final) ---
-  const Step3Confirmation = () => {
+    const Step3Confirmation = () => {
         // Lógica para determinar si fue un fallo TOTAL: 
-        const totalFailed = registeredCount === 0 && (errorCount + validCount) > 0;
-        
-        // Definición de las clases y colores según si es un fallo total o no
-        const boxClasses = totalFailed 
-            ? "p-8 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-lg flex items-start space-x-2" 
-            : "p-8 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-lg flex items-start space-x-2";
-        
-        const iconColor = totalFailed ? "text-red-600" : "text-green-600";
-        
-        // Títulos y mensajes solicitados
-        const title = totalFailed 
-            ? "¡Proceso Fallido!" 
-            : "¡Proceso Completado Exitosamente!";
-        
-        const messageContent = totalFailed 
-            ? "Usuario no registrado/Usuario existente."
-            : `Se registraron **${registrationCount}** preceptores.`;
-        
-        const showWarning = (processedData.length - registeredCount) > 0;
+        const totalFailed = registeredCount === 0 && (errorCount + validCount) > 0;
+
+        // Definición de las clases y colores según si es un fallo total o no
+        const boxClasses = totalFailed
+            ? "p-8 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-lg flex items-start space-x-2"
+            : "p-8 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-lg flex items-start space-x-2";
+
+        const iconColor = totalFailed ? "text-red-600" : "text-green-600";
+
+        // Títulos y mensajes solicitados
+        const title = totalFailed
+            ? "¡Proceso Fallido!"
+            : "¡Proceso Completado Exitosamente!";
+
+        const messageContent = totalFailed
+            ? "Usuario no registrado/Usuario existente."
+            : `Se registraron **${registrationCount}** preceptores.`;
+
+        const showWarning = (processedData.length - registeredCount) > 0;
 
         // 💡 Retorno del JSX
-        return (
-            <section>
-                <div className={boxClasses}>
-                    <svg className={`w-8 h-8 flex-shrink-0 mt-1 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        return (
+            <section>
+                <div className={boxClasses}>
+                    <svg className={`w-8 h-8 flex-shrink-0 mt-1 ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div>
                         <h2 className="text-2xl font-bold">{title}</h2>
-                            <p className="mt-2 text-lg" dangerouslySetInnerHTML={{ __html: messageContent }}></p>
+                        <p className="mt-2 text-lg" dangerouslySetInnerHTML={{ __html: messageContent }}></p>
 
-                            {showWarning && !totalFailed && (
+                        {showWarning && !totalFailed && (
                             <p className="mt-2 text-sm text-red-700">
                                 ⚠️ {(processedData.length - registeredCount)} registros fallaron o tenían errores. Vuelve a registrarte.
                             </p>
-                            )}
-                         <button 
-                            onClick={resetApp} 
+                        )}
+                        <button
+                            onClick={resetApp}
                             className="mt-4 px-6 py-2 text-sm font-semibold text-white bg-indigo-500 rounded-full hover:bg-indigo-600 transition shadow-md" >
-                         Cargar otro archivo
+                            Cargar otro archivo
                         </button>
                     </div>
                 </div>
             </section>
         );
-    };  
+    };
 
     // --- Renderizado principal ---
     return (
         <div className="min-h-screen flex flex-col items-center p-4 sm:p-8 bg-gray-50">
-            
+
             <header className="w-full max-w-4xl mb-8">
                 <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Registro Masivo de Preceptores</h1>
                 <p className="text-lg text-gray-600">Proceso de carga de usuarios mediante archivo CSV.</p>

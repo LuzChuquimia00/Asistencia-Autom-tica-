@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import { pb } from '@/server/pocketbase'; // Asegúrate que la ruta sea correcta
-import { Preceptor } from '@/types'; // Importa el tipo que definimos
+import { Preceptor } from '@/type'; // Importa el tipo que definimos
 
 export default function MainAppLayout({
   children,
@@ -44,7 +44,14 @@ export default function MainAppLayout({
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const handleLogout = () => {
-    pb.authStore.clear(); // Esto activará el 'onChange' y la redirección
+    // 1. Muestra un diálogo de confirmación en el navegador.
+    const userConfirmed = window.confirm("¿Estás seguro de que deseas cerrar la sesión?");
+
+    // 2. Solo si el usuario hace clic en "Aceptar", se ejecuta el cierre de sesión.
+    if (userConfirmed) {
+        pb.authStore.clear(); // Esto activará el 'onChange' y la redirección
+    }
+    // Si el usuario hace clic en "Cancelar", no pasa nada.
   };
 
   // No renderizar el layout principal hasta que se confirme que el usuario está logueado
