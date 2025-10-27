@@ -174,3 +174,40 @@
   .desktop-nav { display: none; } /* Oculta el menú de PC en celular */
   .mobile-menu-button { display: block; } /* Muestra el botón de hamburguesa en celular */
 }
+
+.user-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--color-text-header);
+  font-weight: 500;
+  white-space: nowrap; /* Evita que el nombre del usuario se corte */
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-header);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.logout-button:hover {
+  opacity: 0.75;
+}
+
+.logout-button svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Ocultar el perfil en móvil, ya que no hay espacio */
+@media (max-width: 992px) {
+  .user-profile-container {
+    display: none;
+  }
+}
