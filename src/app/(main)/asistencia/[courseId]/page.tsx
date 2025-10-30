@@ -27,7 +27,7 @@ export default function DetalleAsistenciaPage() {
         const today = new Date().toISOString().split('T')[0];
         console.log(`Buscando en PocketBase con: course = "${courseName}" Y date = "${today}"`);
         const records = await pb.collection('attendance_management').getFullList<AsistenciaEstudiante>({
-          //filter: `course = "${courseName}" && date = "${today}"`, 
+          filter: `course ~ "${courseName}" && date ~ "${today}"`, 
           expand: 'student',
           
         });

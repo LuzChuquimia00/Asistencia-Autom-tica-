@@ -4,7 +4,6 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-// ✅ CORREGIDO: Interfaz para los datos del estudiante expandido
 // Nos aseguramos que coincida con tu schema de PocketBase ("name", "surname")
 interface StudentData {
   name: string;
@@ -28,7 +27,6 @@ export const columns: ColumnDef<AsistenciaEstudiante>[] = [
     cell: ({ row }) => {
       const student = row.original.expand.student;
       
-      // ✅ CORREGIDO: Verificación más robusta
       // Si no hay datos del estudiante O si el nombre o apellido faltan
       if (!student || !student.name) {
         return <span className="text-gray-400">Alumno no encontrado</span>;
