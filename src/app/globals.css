@@ -6,6 +6,7 @@
 /* En app/globals.css */
 :root{
    --color-header-bg: #0F193E;
+   --color-header-bg2: #6acbed;
    --color-text-header: #FFFFFF;
    --radius: 0.625rem;
    --background: oklch(1 0 0);

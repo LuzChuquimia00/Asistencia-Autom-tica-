@@ -120,14 +120,11 @@ const AsistenciaPage = () => {
                 {filteredCourses.length > 0 ? (
                     filteredCourses.map((yearGroup) => (
                         <section key={yearGroup.year} className="planilla-section">
-                            <h2 className="planilla-title">Planilla {yearGroup.year}</h2>
+                            <h2 className="planilla-title">{yearGroup.year}</h2>
                             <div className="course-cards-grid">
                                 {yearGroup.courses.map((course) => (
                                     <Link key={course.id} href={`/asistencia/${course.id}`} className="course-card-link">
                                         <div className="course-card">
-                                            <div className="card-image-placeholder">
-                                                <span>IMG</span>
-                                            </div>
                                             <div className="card-course-name">{course.name}</div>
                                         </div>
                                     </Link>

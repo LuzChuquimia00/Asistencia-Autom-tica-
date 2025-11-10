@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import './Header.css';
-import { Preceptor } from '../../types'; // Asegúrate de haber creado este archivo
+import { Preceptor } from '../../type'; // Asegúrate de haber creado este archivo
 
 // Definimos las propiedades que el Header va a recibir
 interface HeaderProps {
@@ -16,8 +16,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, currentPath, currentUser
   return (
     <header className="main-header">
       <div className="header-left">
-        <img src="/assets/UBA-LOGO.png" alt="Logo de Geasis" className="header-logo-img" />
-        <span className="logo-text">.UBA Geasis</span>
+        
+        <span className="logo-text">Geasis</span>
       </div>
       
       <nav className="desktop-nav">

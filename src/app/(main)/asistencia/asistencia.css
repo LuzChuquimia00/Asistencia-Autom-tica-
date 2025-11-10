@@ -14,8 +14,8 @@
 
 .asistencia-header h1 {
     font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
+    font-weight: 700;
+    margin: 0 0 4px;
 }
 
 .asistencia-header p {
@@ -100,15 +100,7 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card-image-placeholder {
-    height: 120px;
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: #aaa;
-}
+
 
 .card-course-name {
     padding: 1rem;
