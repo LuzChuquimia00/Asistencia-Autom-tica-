@@ -4,7 +4,6 @@ import Link from 'next/link';
 import './asistencia.css';
 
 // --- Datos de los Cursos ---
-// (Esta estructura de datos no cambia)
 const allCoursesByYear = [
     {
         year: '1°',
@@ -24,43 +23,6 @@ const allCoursesByYear = [
             { id: '2°D', name: '2°D' },
         ],
     },
-    {
-        year: '3°',
-        courses: [
-            { id: '3°A', name: '3°A' },
-            { id: '3°B', name: '3°B' },
-            { id: '3°C', name: '3°C' },
-            { id: '3°D', name: '3°D' },
-        ],
-    },
-    {
-        year: '4°',
-        courses: [
-            { id: '4°A', name: '4°A' },
-            { id: '4°B', name: '4°B' },
-            { id: '4°C', name: '4°C' },
-            { id: '4°D', name: '4°D' },
-        ],
-    },
-    {
-        year: '5°',
-        courses: [
-            { id: '5°A', name: '5°A' },
-            { id: '5°B', name: '5°B' },
-            { id: '5°C', name: '5°C' },
-            { id: '5°D', name: '5°D' },
-        ],
-    },
-    {
-        year: '6°',
-        courses: [
-            { id: '6°A', name: '6°A' },
-            { id: '6°B', name: '6°B' },
-            { id: '6°C', name: '6°C' },
-            { id: '6°D', name: '6°D' },
-        ],
-    },
-    // Puedes agregar 4to, 5to y 6to año aquí.
 ];
 
 const AsistenciaPage = () => {

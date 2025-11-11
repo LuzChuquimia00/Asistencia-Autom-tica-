@@ -82,7 +82,7 @@ const Inicio = () => {
         <div className="hero-image-container">
           <img src='\img\3.jpeg' alt="Fachada de la UBA" className="hero-image" />
           <div className="hero-text-content">
-            <h1>Geasis Inicio</h1>
+            <h1>Gestión Asistencia</h1>
             <p className="current-date">{today}</p>
             <p className="subtitle">Resumen general del estado de las asistencias.</p>
           </div>

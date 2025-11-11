@@ -219,7 +219,7 @@
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  border-radius: 0 0 16px 16px;
+  /*border-radius: 0 0 16px 16px;*/
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -229,7 +229,7 @@
   inset: 0; /* Abarca todo el contenedor */
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
   z-index: 1;
-  border-radius: 0 0 16px 16px;
+  /*border-radius: 0 0 16px 16px;*/
 }
 
 .hero-image {
@@ -274,6 +274,7 @@
   /* --- ESTAS DOS LÍNEAS SON LA SOLUCIÓN --- */
   max-width: 1200px; /* Define un ancho máximo para la grilla */
   margin: 0 auto;    /* Centra la grilla horizontalmente */
+  padding: 1rem;
 }
 
 .card {
@@ -301,7 +302,7 @@
 }
 
 .card-label {
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   color: var(--color-text-secondary);
   margin: 0;
 }
