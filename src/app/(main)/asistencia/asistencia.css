@@ -4,8 +4,7 @@
     margin: 2rem auto;
     padding: 1rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    color: #333;
-    
+    color: var(--foreground);
 }
 
 /* Cabecera */
@@ -21,7 +20,7 @@
 
 .asistencia-header p {
     font-size: 1.1rem;
-    color: #555;
+    color: var(--muted-foreground);
     max-width: 600px;
     margin-bottom: 1.5rem;
 }
@@ -36,7 +35,10 @@
     width: 100%;
     padding: 0.75rem 1rem;
     padding-right: 3rem; /* Espacio para el ícono */
-    border: 1px solid #ccc;
+    background-color: var(--card);
+    border: 1.5px solid var(--border);
+    color: var(--foreground);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra sutil por defecto */
     border-radius: 9999px; /* Bordes redondeados */
     font-size: 1rem;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -44,8 +46,8 @@
 
 .search-input:focus {
     outline: none;
-    border-color: #0F193E; /* Color del header */
-    box-shadow: 0 0 0 3px rgba(15, 25, 62, 0.1);
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px oklch(from var(--ring) l c h / 30%);
 }
 
 .search-icon {
@@ -53,7 +55,7 @@
     right: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #777;
+    color: var(--muted-foreground);
 }
 
 /* Contenedor principal de las planillas */
@@ -68,12 +70,34 @@
     width: 100%;
 }
 
+/* --- 🎨 ¡CAMBIO SOLICITADO! (Parte 1) --- */
 .planilla-title {
     font-size: 1.5rem;
     font-weight: 700;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #eee;
     margin-bottom: 1.5rem;
+
+    /* 1. Añadimos posición relativa para controlar el ::after */
+    position: relative; 
+    
+    /* 2. Quitamos el borde original que ocupaba el 100% */
+    border-bottom: none; 
+}
+
+/* --- 🎨 ¡CAMBIO SOLICITADO! (Parte 2) --- */
+/* 3. Creamos la nueva línea usando un pseudo-elemento ::after */
+.planilla-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0; /* La ponemos abajo del texto */
+    left: 0;   /* La alineamos a la izquierda */
+    
+    height: 1px; /* Grosor de la línea */
+    background-color: #286198; /* Tu color azul */
+
+    /* 4. ¡AQUÍ LA HACEMOS MÁS CORTA! */
+    /* Puedes jugar con este porcentaje (90%, 95%, etc.) */
+    width: 72%; 
 }
 
 /* Grilla de tarjetas de cursos */
@@ -89,28 +113,59 @@
 }
 
 .course-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    background-color: #fff;
+
+    /* --- 🎨 MODIFICACIÓN PARA LA SOMBRA DE LAS TARJETAS --- */
+    /* Mismo efecto que las tarjetas de Inicio, pero manteniendo el color base.
+       Ajusté los valores de la sombra para que sea más notable,
+       simulando el efecto de "levantamiento" del azul marino de tus tarjetas de inicio.
+    */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Sombra más pronunciada */
+    /* --- Fin de modificación --- */
 }
 
 .course-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* --- 🎨 MODIFICACIÓN PARA LA SOMBRA EN HOVER --- */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra aún más grande en hover */
+    /* --- Fin de modificación --- */
 }
-
-
 
 .card-course-name {
     padding: 1rem;
     text-align: center;
     font-weight: 600;
     font-size: 1.1rem;
+    color: var(--card-foreground);
 }
 
-/* --- Media Queries para Responsividad --- */
+/* Colores Específicos Solicitados (Sin cambios) */
+.course-card.grade-1 {
+    background-color: #4C97D2;
+}
+
+.course-card.grade-2 {
+    background-color: #2A7ABF;
+}
+
+.course-card.grade-1 .card-course-name,
+.course-card.grade-2 .card-course-name {
+    color: white;
+}
+
+/* Mensaje de "No hay resultados" */
+.no-results-message {
+    color: var(--muted-foreground);
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 2rem;
+}
+
+/* Media Queries para Responsividad (Sin cambios) */
 @media (max-width: 768px) {
     .course-cards-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));

@@ -9,7 +9,7 @@
    --color-header-bg2: #6acbed;
    --color-text-header: #FFFFFF;
    --radius: 0.625rem;
-   --background: oklch(1 0 0);
+   --background: #B3ECF9;
    --foreground: oklch(0.145 0 0);
    --card: oklch(1 0 0);
    --card-foreground: oklch(0.145 0 0);
@@ -121,7 +121,38 @@
   * {
     @apply border-border outline-ring/50;
    }
+  
+  /* --- AJUSTES EN BODY --- */
   body {
     @apply bg-background text-foreground;
+    /* Necesario para que el ::after se posicione correctamente */
+    position: relative; 
+    /* Evita que la imagen cree un scroll horizontal */
+    overflow-x: hidden; 
    }
+   
+   /* --- CÓDIGO PARA EL FONDO FIJO --- */
+   body::after {
+    content: '';
+    position: fixed; /* <-- ESTA ES LA CLAVE para que no se mueva */
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1; /* Detrás del contenido, encima del fondo azul */
+    
+    /* Asegúrate de que el nombre 'icono3.png' sea correcto 
+       y esté en la carpeta 'public/' */
+    background-image: url('/icono3.png'); 
+    background-repeat: no-repeat;
+    
+    /* Ajustes para que llene el costado */
+    width: 600px; /* Ancho de la franja decorativa */
+    height: 100vh; /* 100% de la altura de la ventana */
+    background-position: top right;
+    background-size: cover; /* Rellena el espacio */
+
+    /* Evita que se pueda seleccionar o hacer clic en ella */
+    pointer-events: none; 
+  }
 }
+

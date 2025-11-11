@@ -87,6 +87,13 @@ const AsistenciaPage = () => {
                                 {yearGroup.courses.map((course) => (
                                     <Link key={course.id} href={`/asistencia/${course.id}`} className="course-card-link">
                                         <div className="course-card">
+                                        <div 
+                                          className={`
+                                            course-card 
+                                            ${yearGroup.year === '1°' ? 'grade-1' : ''}
+                                            ${yearGroup.year === '2°' ? 'grade-2' : ''}
+                                          `}
+                                        ></div>
                                             <div className="card-course-name">{course.name}</div>
                                         </div>
                                     </Link>
