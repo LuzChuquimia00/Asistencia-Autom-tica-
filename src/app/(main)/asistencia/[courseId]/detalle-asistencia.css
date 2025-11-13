@@ -1,0 +1,98 @@
+/*
+ * Archivo: src/app/asistencia/[cursoId]/detalle-asistencia.css
+ */
+
+/* 1. Contenedor principal para la página de detalles 
+   (Asumimos que un 'main-content' global ya da el padding-top de 80px)
+*/
+.detalle-container {
+    padding: 2.5rem 40px 40px 40px; 
+    margin: 0 auto;
+}
+
+/* 2. Estilos para el título ("Detalles de la Asistencia") 
+*/
+.detalle-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--foreground); /* Usa color de texto del tema */
+    margin: 2.5rem 0 4px 0; /* Añade margen superior */
+}
+
+.detalle-header p {
+    font-size: 1.1rem;
+    color: var(--muted-foreground); /* Usa color de texto del tema */
+    margin-bottom: 2.5rem;
+}
+
+.detalle-header p strong {
+    color: var(--foreground); /* Resalta el nombre del curso */
+    font-weight: 600;
+}
+
+/* 3. ¡SOLUCIÓN PARA "ACLARAR" LA TABLA!
+   Usamos un "wrapper" para convertir la tabla en una "tarjeta" (card).
+*/
+.asistencia-table-wrapper {
+    /* Estilos de transparencia y borde (de la vez pasada) */
+    background-color: oklch(from var(--card) l c h / 0.10);
+    border: 1.5px solid var(--ring); 
+    border-radius: var(--radius-lg); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
+    overflow: hidden; 
+
+    /* --- ¡ESTO ES LO NUEVO! --- */
+    /* Hacemos que la tabla ocupe el 90% del ancho del contenedor */
+    max-width: 85%; 
+    
+    /* La centramos horizontalmente */
+    margin-left: auto;
+    margin-right: auto;
+    /* --- Fin del cambio --- */
+}
+.asistencia-table {
+    width: 100%;
+    border-collapse: collapse; /* Bordes limpios */
+}
+
+/* Estilos para los encabezados (Alumno, Estado, Ingreso) */
+.asistencia-table th {
+    /* Un fondo gris muy claro para el header */
+    background-color: oklch(from var(--border) h c 0.98); 
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    border-bottom: 2px solid var(--border); /* Línea divisoria */
+}
+
+/* Estilos para las celdas de datos (cuando haya) */
+.asistencia-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--foreground);
+}
+
+/* Quitar el borde de la última fila */
+.asistencia-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* 4. ¡SOLUCIÓN PARA "AJUSTAR EL LARGO"!
+   Estilo para la fila de "No se encontraron alumnos"
+*/
+.empty-row td {
+    text-align: center;
+    color: var(--muted-foreground);
+    font-style: italic;
+    padding: 40px; /* Un padding generoso */
+
+    /* ======================================================= */
+    /* ¡¡AQUÍ AJUSTAS EL LARGO/ALTO MÍNIMO DE LA TABLA VACÍA!! */
+    min-height: 250px; 
+    /* (Puedes cambiar este valor a 200px, 300px, etc.) */
+    /* ======================================================= */
+    
+    /* (Importante) Asegura que la celda tenga altura */
+    display: block; 
+}
